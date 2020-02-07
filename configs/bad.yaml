@@ -1,0 +1,4 @@
+users
+  - username: User
+    password: Prom
+    namespace: tenant-1

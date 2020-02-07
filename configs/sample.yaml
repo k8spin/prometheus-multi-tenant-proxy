@@ -1,0 +1,7 @@
+users:
+  - username: Happy
+    password: Prometheus
+    namespace: default
+  - username: Sad
+    password: Prometheus
+    namespace: kube-system
