@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	proxy "github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/app/prometheus-multi-tenant-proxy"
+	proxy "github.com/k8spin/prometheus-multi-tenant-proxy/internal/app/prometheus-multi-tenant-proxy"
 	"github.com/urfave/cli"
 )
 
@@ -18,7 +18,10 @@ func main() {
 	app.Name = "Prometheus Multitenant Proxy"
 	app.Usage = "Makes your Prometheus server multi tenant"
 	app.Version = version
-	app.Author = "Ángel Barrera - @angelbarrera92"
+	app.Authors = []cli.Author{
+		{Name: "Angel Barrera", Email: "angel@k8spin.cloud"},
+		{Name: "Pau Rosello", Email: "pau@k8spin.cloud"},
+	}
 	app.Commands = []cli.Command{
 		{
 			Name:   "run",

@@ -7,7 +7,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 
-	"github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/pkg"
+	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 	"github.com/urfave/cli"
 )
 

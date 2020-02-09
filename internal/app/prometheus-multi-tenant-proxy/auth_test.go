@@ -3,7 +3,7 @@ package proxy
 import (
 	"testing"
 
-	"github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/pkg"
+	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 )
 
 func Test_isAuthorized(t *testing.T) {

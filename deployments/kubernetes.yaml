@@ -41,7 +41,7 @@ spec:
           secretName: prometheus-auth-config
       containers:
       - name: prometheus-multi-tenant-proxy
-        image: angelbarrera92/prometheus-multi-tenant-proxy:dev
+        image: k8spin/prometheus-multi-tenant-proxy:dev
         imagePullPolicy: Always
         command: ["/bin/bash"]
         args: ["-c", "/prometheus-multi-tenant-proxy run --port=${PROMETHEUS_MULTI_TENANT_PROXY_PORT} --prometheus-endpoint=${PROMETHEUS_MULTI_TENANT_PROXY_PROMETHEUS_ENDPOINT} --auth-config=/etc/prometheus-auth-config/authn.yaml"]

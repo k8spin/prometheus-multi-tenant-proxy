@@ -6,7 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 
-	"github.com/angelbarrera92/prometheus-multi-tenant-proxy/pkg/injector"
+	"github.com/k8spin/prometheus-multi-tenant-proxy/pkg/injector"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql"
 )

@@ -1,4 +1,4 @@
-module github.com/angelbarrera92/prometheus-multi-tenant-proxy
+module github.com/k8spin/prometheus-multi-tenant-proxy
 
 go 1.12
 

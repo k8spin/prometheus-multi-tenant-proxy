@@ -5,7 +5,7 @@ import (
 	"crypto/subtle"
 	"net/http"
 
-	"github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/pkg"
+	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 )
 
 type key int
