@@ -11,6 +11,7 @@ WORKDIR /go/src/github.com/angelbarrera92/prometheus-multi-tenant-proxy
 COPY go.mod go.mod
 COPY go.sum go.sum
 COPY cmd cmd
+COPY pkg pkg
 COPY internal internal
 
 RUN cd cmd/prometheus-multi-tenant-proxy && \

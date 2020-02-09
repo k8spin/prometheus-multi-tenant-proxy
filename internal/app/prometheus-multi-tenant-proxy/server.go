@@ -13,12 +13,12 @@ import (
 
 // Serve serves
 func Serve(c *cli.Context) error {
-	prometheusLabelProxyServerURL, _ := url.Parse(c.String("prometheus-label-proxy-endpoint"))
+	prometheusServerURL, _ := url.Parse(c.String("prometheus-endpoint"))
 	serveAt := fmt.Sprintf(":%d", c.Int("port"))
 	authConfigLocation := c.String("auth-config")
 	authConfig, _ := pkg.ParseConfig(&authConfigLocation)
 
-	http.HandleFunc("/", createHandler(prometheusLabelProxyServerURL, authConfig))
+	http.HandleFunc("/", createHandler(prometheusServerURL, authConfig))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
 		return err
@@ -26,7 +26,7 @@ func Serve(c *cli.Context) error {
 	return nil
 }
 
-func createHandler(prometheusLabelProxyServerURL *url.URL, authConfig *pkg.Authn) http.HandlerFunc {
-	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusLabelProxyServerURL)
-	return LogRequest(BasicAuth(ReversePrometheus(reverseProxy, prometheusLabelProxyServerURL), authConfig))
+func createHandler(prometheusServerURL *url.URL, authConfig *pkg.Authn) http.HandlerFunc {
+	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
+	return LogRequest(BasicAuth(ReversePrometheus(reverseProxy, prometheusServerURL), authConfig))
 }

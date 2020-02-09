@@ -38,8 +38,8 @@ spec:
         args:
         - "run"
         - "--port=9092"
-        - "--prometheus-label-proxy-endpoint=http://127.0.0.1:9091"
-        - "--auth-config=/etc/prometheus-auth-config/authn.yaml"      
+        - "--prometheus-endpoint=http://prometheus-operated.default.svc.cluster.local:9090"
+        - "--auth-config=/etc/prometheus-auth-config/authn.yaml"
         ports:
           - name: http
             containerPort: 9092
@@ -47,13 +47,6 @@ spec:
         volumeMounts:
           - name: prometheus-auth-config
             mountPath: /etc/prometheus-auth-config
-      - name: prometheus-label-proxy
-        image: angelbarrera92/prom-label-proxy:dev
-        imagePullPolicy: Always
-        args:
-        - "--insecure-listen-address=127.0.0.1:9091"
-        - "--label=namespace"
-        - "--upstream=http://prometheus-operated.default.svc.cluster.local:9090"
 ---
 apiVersion: v1
 kind: Service
@@ -71,4 +64,3 @@ spec:
     targetPort: http
   selector:
     application: prometheus-multitenant-proxy
-  

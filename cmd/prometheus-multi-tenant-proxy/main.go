@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/app/prometheus-multi-tenant-proxy"
+	proxy "github.com/angelbarrera92/prometheus-multi-tenant-proxy/internal/app/prometheus-multi-tenant-proxy"
 	"github.com/urfave/cli"
 )
 
@@ -30,8 +30,8 @@ func main() {
 					Usage: "Port to expose this prometheus proxy",
 					Value: 9092,
 				}, cli.StringFlag{
-					Name:  "prometheus-label-proxy-endpoint",
-					Usage: "Prometheus Label Proxy",
+					Name:  "prometheus-endpoint",
+					Usage: "Prometheus server endpoint",
 					Value: "http://localhost:9091",
 				}, cli.StringFlag{
 					Name:  "auth-config",

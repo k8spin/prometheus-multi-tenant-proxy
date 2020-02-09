@@ -12,15 +12,15 @@ import (
 )
 
 // ReversePrometheus a
-func ReversePrometheus(reverseProxy *httputil.ReverseProxy, prometheusLabelProxyServerURL *url.URL) http.HandlerFunc {
+func ReversePrometheus(reverseProxy *httputil.ReverseProxy, prometheusServerURL *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		checkRequest(r, prometheusLabelProxyServerURL)
+		checkRequest(r, prometheusServerURL)
 		reverseProxy.ServeHTTP(w, r)
-		log.Printf("[PROXY]\t%+v\n", r.URL)
+		log.Printf("[TO]\t%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
 	}
 }
 
-func modifyRequest(r *http.Request, prometheusLabelProxyServerURL *url.URL) error {
+func modifyRequest(r *http.Request, prometheusServerURL *url.URL) error {
 	namespace := r.Context().Value(Namespace)
 	expr, err := promql.ParseExpr(r.FormValue("query"))
 	if err != nil {
@@ -43,15 +43,15 @@ func modifyRequest(r *http.Request, prometheusLabelProxyServerURL *url.URL) erro
 	return nil
 }
 
-func checkRequest(r *http.Request, prometheusLabelProxyServerURL *url.URL) error {
+func checkRequest(r *http.Request, prometheusServerURL *url.URL) error {
 	if r.URL.Path == "/api/v1/query" || r.URL.Path == "/api/v1/query_range" {
-		if err := modifyRequest(r, prometheusLabelProxyServerURL); err != nil {
+		if err := modifyRequest(r, prometheusServerURL); err != nil {
 			return err
 		}
 	}
-	r.Host = prometheusLabelProxyServerURL.Host
-	r.URL.Scheme = prometheusLabelProxyServerURL.Scheme
-	r.URL.Host = prometheusLabelProxyServerURL.Host
+	r.Host = prometheusServerURL.Host
+	r.URL.Scheme = prometheusServerURL.Scheme
+	r.URL.Host = prometheusServerURL.Host
 	r.Header.Set("X-Forwarded-Host", r.Host)
 	return nil
 }
