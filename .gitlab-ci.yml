@@ -1,0 +1,27 @@
+stages:
+  - build
+
+## Templates
+.runners: &runners
+  tags:
+    - private
+    - docker
+    - kubernetes
+    - amd64
+
+build:
+  stage: build
+  <<: *runners
+  image: golang:1.12.7
+  before_script:
+    - go mod download
+    - mkdir binaries
+  script:
+    - cd cmd/prometheus-multi-tenant-proxy
+    - GOOS=darwin GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_SHORT_SHA}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
+    - mv prometheus-multi-tenant-proxy ../../binaries/prometheus-multi-tenant-proxy-darwing-amd64
+    - GOOS=linux GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_SHORT_SHA}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
+    - mv prometheus-multi-tenant-proxy ../../binaries/prometheus-multi-tenant-proxy-linux-amd64
+  artifacts:
+    paths:
+      - binaries/
