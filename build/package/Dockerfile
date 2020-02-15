@@ -1,5 +1,8 @@
 FROM golang:1.13-stretch as builder
 
+ARG VERSION=dev
+ARG COMMIT=none
+
 ENV CGO_ENABLED=0
 
 RUN apt-get update && apt-get install -y git ca-certificates && \
@@ -14,7 +17,7 @@ COPY pkg pkg
 COPY internal internal
 
 RUN cd cmd/prometheus-multi-tenant-proxy && \
-    go build .
+    go build . -ldflags="-X 'main.version=${VERSION}' -X 'main.commit=${COMMIT}'"
 
 FROM debian:stretch
 
