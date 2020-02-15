@@ -1,5 +1,6 @@
 stages:
   - build
+  - publish
 
 ## Templates
 .runners: &runners
@@ -8,6 +9,37 @@ stages:
     - docker
     - kubernetes
     - amd64
+
+.publish_container_image: &publish_container_image
+  <<: *runners
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - REGISTRY_AUTH=$(echo -n ${REGISTRY_USER}:${REGISTRY_PASSWORD} | base64)
+    - echo "{\"auths\":{\"${REGISTRY}\":{\"auth\":\"${REGISTRY_AUTH}\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor
+      --context ${CI_PROJECT_DIR}
+      --dockerfile ${CI_PROJECT_DIR}/${CONTAINER_DOCKERFILE:-Dockerfile}
+      --destination ${CONTAINER_IMAGE_NAME}
+      ${KANIKO_EXTRA_ARG}
+
+.github_release: &github_release
+  <<: *runners
+  image:
+    name: angelbarrera92/plugins-github-release:latest
+    entrypoint: [""]
+  script:
+    - /bin/drone-github-release
+      --api-key "${GITHUB_RELEASE_GITHUB_ACCESS_TOKEN}"
+      --prerelease="${GITHUB_RELEASE_IS_PRE_RELEASE}"
+      --repo.name="${GITHUB_RELEASE_REPOSITORY_NAME}"
+      --repo.owner="${GITHUB_RELEASE_REPOSITORY_OWNER}"
+      --overwrite
+      --build.event="tag"
+      --title="${GITHUB_RELEASE_TITLE}"
+      --commit.ref="${CI_COMMIT_TAG}"
+      --files "${GITHUB_RELEASE_FILES}"
 
 build:
   stage: build
@@ -18,10 +50,79 @@ build:
     - mkdir binaries
   script:
     - cd cmd/prometheus-multi-tenant-proxy
-    - GOOS=darwin GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_SHORT_SHA}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
+    - GOOS=darwin GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_TAG:-${CI_COMMIT_SHORT_SHA}}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
     - mv prometheus-multi-tenant-proxy ../../binaries/prometheus-multi-tenant-proxy-darwing-amd64
-    - GOOS=linux GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_SHORT_SHA}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
+    - GOOS=linux GOARCH=amd64 go build -o prometheus-multi-tenant-proxy -ldflags="-X 'main.version=${CI_COMMIT_TAG:-${CI_COMMIT_SHORT_SHA}}' -X 'main.commit=${CI_COMMIT_SHORT_SHA}'"
     - mv prometheus-multi-tenant-proxy ../../binaries/prometheus-multi-tenant-proxy-linux-amd64
   artifacts:
     paths:
       - binaries/
+
+## Gitlab: builds every commit publishing the container image in the gitlab registry
+gitlab_unstable:
+  stage: publish
+  <<: *publish_container_image
+  variables:
+    REGISTRY: ${CI_REGISTRY}
+    REGISTRY_USER: ${CI_REGISTRY_USER}
+    REGISTRY_PASSWORD: ${CI_REGISTRY_PASSWORD}
+    CONTAINER_IMAGE_NAME: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+    CONTAINER_DOCKERFILE: build/package/Dockerfile
+    KANIKO_EXTRA_ARG: ""
+  except:
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)-rc([0-9]+)$/
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
+
+## Dockerhub: publish the image if is a release candidate or a final release
+dockerhub_release_cadidate:
+  stage: publish
+  <<: *publish_container_image
+  variables:
+    REGISTRY: ${DOCKERHUB_REGISTRY}
+    REGISTRY_USER: ${DOCKERHUB_REGISTRY_USER}
+    REGISTRY_PASSWORD: ${DOCKERHUB_REGISTRY_PASSWORD}
+    CONTAINER_IMAGE_NAME: ${DOCKERHUB_REGISTRY_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}
+    CONTAINER_DOCKERFILE: build/package/Dockerfile
+    KANIKO_EXTRA_ARG: ""
+  only:
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)-rc([0-9]+)$/
+
+dockerhub_stable:
+  stage: publish
+  <<: *publish_container_image
+  variables:
+    REGISTRY: ${DOCKERHUB_REGISTRY}
+    REGISTRY_USER: ${DOCKERHUB_REGISTRY_USER}
+    REGISTRY_PASSWORD: ${DOCKERHUB_REGISTRY_PASSWORD}
+    CONTAINER_IMAGE_NAME: ${DOCKERHUB_REGISTRY_USER}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}
+    CONTAINER_DOCKERFILE: build/package/Dockerfile
+    KANIKO_EXTRA_ARG: "--destination ${DOCKERHUB_REGISTRY_USER}/${CI_PROJECT_NAME}:latest"
+  only:
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
+
+## Github: Releases only on release candidate or final release
+github_release_candidate:
+  <<: *github_release
+  stage: publish
+  variables:
+    GITHUB_RELEASE_IS_PRE_RELEASE: "true"
+    GITHUB_RELEASE_REPOSITORY_OWNER: "k8spin"
+    GITHUB_RELEASE_REPOSITORY_NAME: "prometheus-multi-tenant-proxy"
+    GITHUB_RELEASE_TITLE: "Release candidate ${CI_COMMIT_TAG}"
+    GITHUB_RELEASE_GITHUB_ACCESS_TOKEN: ${GITHUB_TOKEN}
+    GITHUB_RELEASE_FILES: "binaries/prometheus-multi-tenant-proxy-darwing-amd64,binaries/prometheus-multi-tenant-proxy-linux-amd64"
+  only:
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)-rc([0-9]+)$/
+
+github_release:
+  <<: *github_release
+  stage: publish
+  variables:
+    GITHUB_RELEASE_IS_PRE_RELEASE: "false"
+    GITHUB_RELEASE_REPOSITORY_OWNER: "k8spin"
+    GITHUB_RELEASE_REPOSITORY_NAME: "prometheus-multi-tenant-proxy"
+    GITHUB_RELEASE_TITLE: "Release ${CI_COMMIT_TAG}"
+    GITHUB_RELEASE_GITHUB_ACCESS_TOKEN: ${GITHUB_TOKEN}
+    GITHUB_RELEASE_FILES: "binaries/prometheus-multi-tenant-proxy-darwing-amd64,binaries/prometheus-multi-tenant-proxy-linux-amd64"
+  only:
+    - /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
