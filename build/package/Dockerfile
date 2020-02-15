@@ -17,7 +17,7 @@ COPY pkg pkg
 COPY internal internal
 
 RUN cd cmd/prometheus-multi-tenant-proxy && \
-    go build . -ldflags="-X 'main.version=${VERSION}' -X 'main.commit=${COMMIT}'"
+    go build -ldflags="-X 'main.version=${VERSION}' -X 'main.commit=${COMMIT}'"
 
 FROM debian:stretch
 
