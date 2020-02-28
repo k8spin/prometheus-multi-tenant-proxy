@@ -13,9 +13,9 @@ type Authn struct {
 
 // User Identifies a user including the tenant
 type User struct {
-	Username string `yaml:"username"`
-	Password string `yaml:"password"`
-	Namespace    string `yaml:"namespace"`
+	Username  string `yaml:"username"`
+	Password  string `yaml:"password"`
+	Namespace string `yaml:"namespace"`
 }
 
 // ParseConfig read a configuration file in the path `location` and returns an Authn object
