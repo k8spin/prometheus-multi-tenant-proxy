@@ -20,9 +20,9 @@ func ReversePrometheus(reverseProxy *httputil.ReverseProxy, prometheusServerURL 
 	}
 }
 
-func modifyRequest(r *http.Request, prometheusServerURL *url.URL) error {
+func modifyRequest(r *http.Request, prometheusServerURL *url.URL, prometheusQueryParameter string) error {
 	namespace := r.Context().Value(Namespace)
-	expr, err := promql.ParseExpr(r.FormValue("query"))
+	expr, err := promql.ParseExpr(r.FormValue(prometheusQueryParameter))
 	if err != nil {
 		return err
 	}
@@ -38,14 +38,19 @@ func modifyRequest(r *http.Request, prometheusServerURL *url.URL) error {
 		return err
 	}
 	q := r.URL.Query()
-	q.Set("query", expr.String())
+	q.Set(prometheusQueryParameter, expr.String())
 	r.URL.RawQuery = q.Encode()
 	return nil
 }
 
 func checkRequest(r *http.Request, prometheusServerURL *url.URL) error {
 	if r.URL.Path == "/api/v1/query" || r.URL.Path == "/api/v1/query_range" {
-		if err := modifyRequest(r, prometheusServerURL); err != nil {
+		if err := modifyRequest(r, prometheusServerURL, "query"); err != nil {
+			return err
+		}
+	}
+	if r.URL.Path == "/api/v1/series" {
+		if err := modifyRequest(r, prometheusServerURL, "match[]"); err != nil {
 			return err
 		}
 	}
