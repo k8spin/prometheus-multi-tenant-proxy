@@ -44,7 +44,7 @@ stages:
 build:
   stage: build
   <<: *runners
-  image: golang:1.12.7
+  image: golang:1.15.0
   before_script:
     - go mod download
     - mkdir binaries
