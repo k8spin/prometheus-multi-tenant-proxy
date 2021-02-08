@@ -8,16 +8,16 @@ import (
 
 func Test_isAuthorized(t *testing.T) {
 	authConfig := pkg.Authn{
-		[]pkg.User{
-			pkg.User{
-				"User-a",
-				"pass-a",
-				"tenant-a",
+		Users: []pkg.User{
+			{
+				Username:  "User-a",
+				Password:  "pass-a",
+				Namespace: "tenant-a",
 			},
-			pkg.User{
-				"User-b",
-				"pass-b",
-				"tenant-b",
+			{
+				Username:  "User-b",
+				Password:  "pass-b",
+				Namespace: "tenant-b",
 			},
 		},
 	}
