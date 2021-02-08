@@ -13,27 +13,27 @@ func TestParseConfig(t *testing.T) {
 	expectedSampleAuth := Authn{
 		[]User{
 			{
-				"Happy",
-				"Prometheus",
-				"default",
+				Username:  "Happy",
+				Password:  "Prometheus",
+				Namespace: "default",
 			}, {
-				"Sad",
-				"Prometheus",
-				"kube-system",
+				Username:  "Sad",
+				Password:  "Prometheus",
+				Namespace: "kube-system",
 			},
 		},
 	}
 	expectedMultipleUserAuth := Authn{
 		[]User{
 			{
-				"User-a",
-				"pass-a",
-				"tenant-a",
+				Username:  "User-a",
+				Password:  "pass-a",
+				Namespace: "tenant-a",
 			},
 			{
-				"User-b",
-				"pass-b",
-				"tenant-b",
+				Username:  "User-b",
+				Password:  "pass-b",
+				Namespace: "tenant-b",
 			},
 		},
 	}
