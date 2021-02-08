@@ -6,9 +6,9 @@ import (
 	"net/http/httputil"
 	"net/url"
 
-	"github.com/k8spin/prometheus-multi-tenant-proxy/pkg/injector"
+	injector "github.com/openshift/prom-label-proxy/injectproxy"
 	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/promql"
+	"github.com/prometheus/prometheus/promql/parser"
 )
 
 // ReversePrometheus a
@@ -22,21 +22,23 @@ func ReversePrometheus(reverseProxy *httputil.ReverseProxy, prometheusServerURL 
 
 func modifyRequest(r *http.Request, prometheusServerURL *url.URL, prometheusQueryParameter string) error {
 	namespace := r.Context().Value(Namespace)
-	expr, err := promql.ParseExpr(r.FormValue(prometheusQueryParameter))
+	expr, err := parser.ParseExpr(r.FormValue(prometheusQueryParameter))
 	if err != nil {
 		return err
 	}
 
-	err = injector.SetRecursive(expr, []*labels.Matcher{
+	e := injector.NewEnforcer([]*labels.Matcher{
 		{
 			Name:  "namespace",
 			Type:  labels.MatchEqual,
 			Value: namespace.(string),
 		},
-	})
-	if err != nil {
+	}...)
+
+	if err := e.EnforceNode(expr); err != nil {
 		return err
 	}
+
 	q := r.URL.Query()
 	q.Set(prometheusQueryParameter, expr.String())
 	r.URL.RawQuery = q.Encode()
