@@ -77,7 +77,7 @@ A tenant can contain multiple users. But a user is tied to a simple tenant.
 If you want to build it from this repository, follow the instructions bellow:
 
 ```bash
-$ docker run -it --entrypoint /bin/bash --rm golang:1.15.7-buster
+$ docker run -it --entrypoint /bin/bash --rm golang:1.15.8-buster
 root@6985c5523ed0:/go# git clone https://github.com/k8spin/prometheus-multi-tenant-proxy.git
 Cloning into 'prometheus-multi-tenant-proxy'...
 remote: Enumerating objects: 96, done.
