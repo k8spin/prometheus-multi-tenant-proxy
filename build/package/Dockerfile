@@ -1,4 +1,4 @@
-FROM golang:1.13-stretch as builder
+FROM golang:1.15.7-buster as builder
 
 ARG VERSION=dev
 ARG COMMIT=none
