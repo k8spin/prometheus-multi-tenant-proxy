@@ -18,7 +18,11 @@ func Serve(c *cli.Context) error {
 	authConfigLocation := c.String("auth-config")
 	authConfig, _ := pkg.ParseConfig(&authConfigLocation)
 
-	http.HandleFunc("/", createHandler(prometheusServerURL, authConfig))
+	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
+	handler := createHandler(reverseProxy, prometheusServerURL)
+	http.HandleFunc("/-/healthy", handler)
+	http.HandleFunc("/-/ready", handler)
+	http.HandleFunc("/", LogRequest(BasicAuth(handler, authConfig)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
 		return err
@@ -26,11 +30,6 @@ func Serve(c *cli.Context) error {
 	return nil
 }
 
-func handlerWithoutAuth(prometheusServerURL *url.URL) http.HandlerFunc {
-	return ReversePrometheus(httputil.NewSingleHostReverseProxy(prometheusServerURL), prometheusServerURL)
-}
-
-func createHandler(prometheusServerURL *url.URL, authConfig *pkg.Authn) http.HandlerFunc {
-	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
-	return LogRequest(BasicAuth(ReversePrometheus(reverseProxy, prometheusServerURL), authConfig))
+func createHandler(proxy *httputil.ReverseProxy, prometheusServerURL *url.URL) http.HandlerFunc {
+	return ReversePrometheus(proxy, prometheusServerURL)
 }
