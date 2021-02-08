@@ -87,31 +87,43 @@ remote: Total 96 (delta 31), reused 87 (delta 22), pack-reused 0
 Unpacking objects: 100% (96/96), done.
 root@6985c5523ed0:/go# cd prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy/
 root@6985c5523ed0:/go# go build
-go: downloading github.com/prometheus/prometheus v1.8.2-0.20200106144642-d9613e5c466c
-go: downloading github.com/urfave/cli v1.21.0
-go: downloading gopkg.in/yaml.v2 v2.2.5
-go: downloading github.com/pkg/errors v0.8.1
-go: downloading github.com/prometheus/common v0.7.0
-go: downloading github.com/edsrzf/mmap-go v1.0.0
-go: downloading github.com/opentracing/opentracing-go v1.1.0
+go: downloading github.com/urfave/cli v1.22.1
+go: downloading github.com/prometheus/prometheus v1.8.2-0.20200507164740-ecee9c8abfd1
+go: downloading github.com/prometheus-community/prom-label-proxy v0.2.1-0.20210129135803-4c30ca94e827
+go: downloading gopkg.in/yaml.v2 v2.4.0
+go: downloading github.com/urfave/cli/v2 v2.3.0
+go: downloading github.com/prometheus/alertmanager v0.20.0
+go: downloading github.com/go-openapi/runtime v0.19.15
+go: downloading github.com/pkg/errors v0.9.1
+go: downloading github.com/go-openapi/strfmt v0.19.5
+go: downloading github.com/go-openapi/analysis v0.19.10
+go: downloading github.com/go-openapi/loads v0.19.5
+go: downloading github.com/mitchellh/mapstructure v1.2.2
+go: downloading github.com/go-openapi/validate v0.19.8
+go: downloading go.mongodb.org/mongo-driver v1.3.2
+go: downloading github.com/go-openapi/swag v0.19.9
+go: downloading github.com/go-openapi/spec v0.19.7
+go: downloading github.com/prometheus/common v0.9.1
 go: downloading github.com/cespare/xxhash v1.1.0
-go: downloading github.com/prometheus/client_golang v1.2.0
-go: downloading github.com/oklog/ulid v1.3.1
-go: downloading github.com/alecthomas/units v0.0.0-20190717042225-c3de453c63f4
-go: downloading github.com/go-kit/kit v0.9.0
-go: downloading golang.org/x/sync v0.0.0-20190423024810-112230192c58
-go: downloading golang.org/x/sys v0.0.0-20191010194322-b09406accb47
-go: downloading github.com/golang/snappy v0.0.1
-go: downloading github.com/golang/protobuf v1.3.2
-go: downloading github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4
-go: downloading github.com/beorn7/perks v1.0.1
-go: downloading github.com/matttproud/golang_protobuf_extensions v1.0.1
-go: downloading github.com/cespare/xxhash/v2 v2.1.0
-go: downloading github.com/prometheus/procfs v0.0.5
-go: downloading github.com/go-logfmt/logfmt v0.4.0
+go: downloading github.com/go-openapi/errors v0.19.4
+go: downloading github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
+go: downloading github.com/go-kit/kit v0.10.0
+go: downloading golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
+go: downloading github.com/go-openapi/jsonpointer v0.19.3
+go: downloading github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496
+go: downloading github.com/mailru/easyjson v0.7.1
+go: downloading github.com/russross/blackfriday/v2 v2.0.1
+go: downloading github.com/go-openapi/jsonreference v0.19.3
+go: downloading github.com/go-logfmt/logfmt v0.5.0
+go: downloading github.com/shurcooL/sanitized_anchor_name v1.0.0
+go: downloading github.com/PuerkitoBio/purell v1.1.1
+go: downloading github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
+go: downloading golang.org/x/text v0.3.2
+go: downloading golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
+go: downloading github.com/go-stack/stack v1.8.0
 root@6985c5523ed0:/go# ./prometheus-multi-tenant-proxy
 NAME:
-   Prometheus Multitenant Proxy - Makes your Prometheus server multi tenant
+   Prometheus multi-tenant proxy - Makes your Prometheus server multi tenant
 
 USAGE:
    prometheus-multi-tenant-proxy [global options] command [command options] [arguments...]
@@ -128,8 +140,8 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --help, -h     show help
-   --version, -v  print the version
+   --help, -h     show help (default: false)
+   --version, -v  print the version (default: false)
 ```
 
 ### Build the container image
@@ -145,3 +157,11 @@ After built, just run it:
 ```bash
 $ docker run --rm prometheus-multi-tenant-proxy:local
 ```
+
+## Using this project at work or in production?
+
+See [ADOPTERS.md](ADOPTERS.md) for what companies are doing with this project today.
+
+## License
+
+The scripts and documentation in this project are released under the [GNU GPLv3](LICENSE)
