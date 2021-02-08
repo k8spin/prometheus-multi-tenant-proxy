@@ -20,8 +20,8 @@ func Serve(c *cli.Context) error {
 
 	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
 	handler := createHandler(reverseProxy, prometheusServerURL)
-	http.HandleFunc("/-/healthy", handler)
-	http.HandleFunc("/-/ready", handler)
+	http.HandleFunc("/-/healthy", LogRequest(handler))
+	http.HandleFunc("/-/ready", LogRequest(handler))
 	http.HandleFunc("/", LogRequest(BasicAuth(handler, authConfig)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
