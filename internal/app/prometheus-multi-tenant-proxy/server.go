@@ -26,6 +26,10 @@ func Serve(c *cli.Context) error {
 	return nil
 }
 
+func handlerWithoutAuth(prometheusServerURL *url.URL) http.HandlerFunc {
+	return ReversePrometheus(httputil.NewSingleHostReverseProxy(prometheusServerURL), prometheusServerURL)
+}
+
 func createHandler(prometheusServerURL *url.URL, authConfig *pkg.Authn) http.HandlerFunc {
 	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
 	return LogRequest(BasicAuth(ReversePrometheus(reverseProxy, prometheusServerURL), authConfig))
