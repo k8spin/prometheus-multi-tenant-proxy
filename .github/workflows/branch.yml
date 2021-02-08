@@ -12,5 +12,5 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-go@v2
       with:
-        go-version: '1.15.7'
+        go-version: '1.15.8'
     - run: go test -v ./...
