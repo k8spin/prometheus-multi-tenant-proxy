@@ -6,7 +6,7 @@ replace github.com/openshift/prom-label-proxy => github.com/prometheus-community
 
 require (
 	github.com/openshift/prom-label-proxy v0.1.1-0.20201207234304-88d4df554125
-	github.com/prometheus/prometheus v1.8.2-0.20200507164740-ecee9c8abfd1
+	github.com/prometheus/prometheus/v2/v2 v2.25.0
 	github.com/urfave/cli/v2 v2.3.0
 	gopkg.in/yaml.v2 v2.4.0
 )
