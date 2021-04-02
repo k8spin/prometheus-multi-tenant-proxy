@@ -1,4 +1,4 @@
-FROM golang:1.15.8-buster as builder
+FROM golang:1.16.3-buster as builder
 
 ARG RELEASE_DATE=unknown
 ARG VERSION=dev
