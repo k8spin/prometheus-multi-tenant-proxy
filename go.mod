@@ -2,7 +2,7 @@ module github.com/k8spin/prometheus-multi-tenant-proxy
 
 go 1.15
 
-replace github.com/openshift/prom-label-proxy => github.com/prometheus-community/prom-label-proxy v0.2.1-0.20210129135803-4c30ca94e827
+replace github.com/openshift/prom-label-proxy => github.com/prometheus-community/prom-label-proxy v0.3.0
 
 require (
 	github.com/openshift/prom-label-proxy v0.1.1-0.20201207234304-88d4df554125
