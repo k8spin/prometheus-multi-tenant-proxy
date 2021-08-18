@@ -6,7 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 
-	injector "github.com/openshift/prom-label-proxy/injectproxy"
+	injector "github.com/prometheus-community/prom-label-proxy/injectproxy"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 )
