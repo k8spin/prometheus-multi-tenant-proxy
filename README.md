@@ -11,7 +11,7 @@
 This project aims to make it easy to deploy a [Prometheus Server](https://github.com/prometheus/prometheus)
 in a multi-tenant way.
 
-This project has some reference from the [prometheus label injector from RedHat](https://github.com/openshift/prom-label-proxy)
+This project has some reference from the [prometheus label injector](https://github.com/prometheus-community/prom-label-proxy)
 
 The proxy enforces the `namespace` label in a given PromQL query while providing a basic auth layer.
 
@@ -87,40 +87,44 @@ remote: Total 96 (delta 31), reused 87 (delta 22), pack-reused 0
 Unpacking objects: 100% (96/96), done.
 root@6985c5523ed0:/go# cd prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy/
 root@6985c5523ed0:/go# go build
-go: downloading github.com/urfave/cli v1.22.1
-go: downloading github.com/prometheus/prometheus v1.8.2-0.20200507164740-ecee9c8abfd1
-go: downloading github.com/prometheus-community/prom-label-proxy v0.2.1-0.20210129135803-4c30ca94e827
-go: downloading gopkg.in/yaml.v2 v2.4.0
 go: downloading github.com/urfave/cli/v2 v2.3.0
-go: downloading github.com/prometheus/alertmanager v0.20.0
-go: downloading github.com/go-openapi/runtime v0.19.15
+go: downloading github.com/prometheus-community/prom-label-proxy v0.3.0
+go: downloading github.com/prometheus/prometheus v1.8.2-0.20210811141203-dcb07e8eac34
+go: downloading gopkg.in/yaml.v2 v2.4.0
+go: downloading github.com/efficientgo/tools/core v0.0.0-20210201224146-3d78f4d30648
+go: downloading github.com/go-openapi/runtime v0.19.28
+go: downloading github.com/go-openapi/strfmt v0.20.1
 go: downloading github.com/pkg/errors v0.9.1
-go: downloading github.com/go-openapi/strfmt v0.19.5
-go: downloading github.com/go-openapi/analysis v0.19.10
-go: downloading github.com/go-openapi/loads v0.19.5
-go: downloading github.com/mitchellh/mapstructure v1.2.2
-go: downloading github.com/go-openapi/validate v0.19.8
-go: downloading go.mongodb.org/mongo-driver v1.3.2
-go: downloading github.com/go-openapi/swag v0.19.9
-go: downloading github.com/go-openapi/spec v0.19.7
-go: downloading github.com/prometheus/common v0.9.1
-go: downloading github.com/cespare/xxhash v1.1.0
-go: downloading github.com/go-openapi/errors v0.19.4
-go: downloading github.com/cpuguy83/go-md2man/v2 v2.0.0-20190314233015-f79a8a8ca69d
-go: downloading github.com/go-kit/kit v0.10.0
-go: downloading golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
-go: downloading github.com/go-openapi/jsonpointer v0.19.3
-go: downloading github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496
-go: downloading github.com/mailru/easyjson v0.7.1
+go: downloading github.com/prometheus/alertmanager v0.22.2
+go: downloading github.com/cpuguy83/go-md2man/v2 v2.0.0
+go: downloading github.com/cespare/xxhash/v2 v2.1.1
+go: downloading github.com/prometheus/common v0.30.0
+go: downloading github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef
+go: downloading github.com/go-openapi/errors v0.20.0
+go: downloading github.com/mitchellh/mapstructure v1.4.1
+go: downloading github.com/oklog/ulid v1.3.1
+go: downloading go.mongodb.org/mongo-driver v1.5.1
+go: downloading github.com/opentracing/opentracing-go v1.2.0
+go: downloading github.com/go-openapi/swag v0.19.15
+go: downloading github.com/go-openapi/validate v0.20.2
 go: downloading github.com/russross/blackfriday/v2 v2.0.1
-go: downloading github.com/go-openapi/jsonreference v0.19.3
-go: downloading github.com/go-logfmt/logfmt v0.5.0
+go: downloading github.com/go-kit/log v0.1.0
+go: downloading github.com/go-openapi/analysis v0.20.0
+go: downloading github.com/go-openapi/loads v0.20.2
+go: downloading github.com/go-openapi/spec v0.20.3
+go: downloading github.com/mailru/easyjson v0.7.6
 go: downloading github.com/shurcooL/sanitized_anchor_name v1.0.0
+go: downloading github.com/go-logfmt/logfmt v0.5.0
+go: downloading go.uber.org/atomic v1.9.0
+go: downloading github.com/go-openapi/jsonpointer v0.19.5
+go: downloading github.com/go-stack/stack v1.8.0
+go: downloading github.com/josharian/intern v1.0.0
+go: downloading golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
+go: downloading github.com/go-openapi/jsonreference v0.19.5
 go: downloading github.com/PuerkitoBio/purell v1.1.1
 go: downloading github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
-go: downloading golang.org/x/text v0.3.2
-go: downloading golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
-go: downloading github.com/go-stack/stack v1.8.0
+go: downloading golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
+go: downloading golang.org/x/text v0.3.6
 root@6985c5523ed0:/go# ./prometheus-multi-tenant-proxy
 NAME:
    Prometheus multi-tenant proxy - Makes your Prometheus server multi tenant
