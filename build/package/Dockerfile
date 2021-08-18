@@ -1,4 +1,4 @@
-FROM golang:1.15.8-buster as builder
+FROM golang:1.17.0-bullseye as builder
 
 ARG RELEASE_DATE=unknown
 ARG VERSION=dev
@@ -19,7 +19,7 @@ COPY internal internal
 RUN cd cmd/prometheus-multi-tenant-proxy && \
     go build -ldflags="-X 'main.version=${VERSION}' -X 'main.commit=${COMMIT}' -X 'main.date=${RELEASE_DATE}'"
 
-FROM debian:buster
+FROM debian:bullseye-slim
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /go/src/github.com/k8spin/prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy /prometheus-multi-tenant-proxy
