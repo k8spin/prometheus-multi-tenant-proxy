@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/prometheus-community/prom-label-proxy v0.3.0
 	github.com/prometheus/prometheus v1.8.2-0.20210811141203-dcb07e8eac34
-	github.com/urfave/cli/v2 v2.3.0
+	github.com/urfave/cli/v2 v2.10.2
 	gopkg.in/yaml.v2 v2.4.0
 )
 
@@ -14,7 +14,7 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/efficientgo/tools/core v0.0.0-20210201224146-3d78f4d30648 // indirect
 	github.com/go-kit/log v0.1.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
@@ -37,11 +37,12 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/alertmanager v0.22.2 // indirect
 	github.com/prometheus/common v0.30.0 // indirect
-	github.com/russross/blackfriday/v2 v2.0.1 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	go.mongodb.org/mongo-driver v1.5.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985 // indirect
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/text v0.3.7 // indirect
 )
