@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	injector "github.com/prometheus-community/prom-label-proxy/injectproxy"
-	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 )
 
@@ -27,7 +27,7 @@ func modifyRequest(r *http.Request, prometheusServerURL *url.URL, prometheusQuer
 		return err
 	}
 
-	e := injector.NewEnforcer([]*labels.Matcher{
+	e := injector.NewEnforcer(true, []*labels.Matcher{
 		{
 			Name:  "namespace",
 			Type:  labels.MatchEqual,
