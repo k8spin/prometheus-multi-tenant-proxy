@@ -1,33 +1,51 @@
 package proxy
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
+	"strings"
 
 	injector "github.com/prometheus-community/prom-label-proxy/injectproxy"
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 )
 
-// ReversePrometheus a
-func ReversePrometheus(reverseProxy *httputil.ReverseProxy, prometheusServerURL *url.URL) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		checkRequest(r, prometheusServerURL)
-		reverseProxy.ServeHTTP(w, r)
-		log.Printf("[TO]\t%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
-	}
+type ReversePrometheusRoundTripper struct {
+	prometheusServerURL *url.URL
 }
 
-func modifyRequest(r *http.Request, prometheusServerURL *url.URL, prometheusQueryParameter string) error {
-	namespace := r.Context().Value(Namespace)
-	expr, err := parser.ParseExpr(r.FormValue(prometheusQueryParameter))
-	if err != nil {
-		return err
+func (r *ReversePrometheusRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	log.Printf("[TO]\t%s %s %s\n", req.RemoteAddr, req.Method, req.URL)
+	return http.DefaultTransport.RoundTrip(req)
+}
+
+func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
+	if req.URL.Path == "/api/v1/query" || req.URL.Path == "/api/v1/query_range" {
+		if err := r.modifyRequest(req, "query"); err != nil {
+			log.Printf("[ERROR]\t%s\n", err)
+		}
+	}
+	if req.URL.Path == "/api/v1/series" {
+		if err := r.modifyRequest(req, "match[]"); err != nil {
+			log.Printf("[ERROR]\t%s\n", err)
+		}
 	}
 
-	e := injector.NewEnforcer(true, []*labels.Matcher{
+	req.Host = r.prometheusServerURL.Host
+	req.URL.Scheme = r.prometheusServerURL.Scheme
+	req.URL.Host = r.prometheusServerURL.Host
+
+	req.Header.Set("X-Forwarded-Host", req.Host)
+	req.Header.Del("Authorization")
+}
+
+func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometheusFormParameter string) error {
+
+	namespace := req.Context().Value(Namespace)
+
+	e := injector.NewEnforcer(false, []*labels.Matcher{
 		{
 			Name:  "namespace",
 			Type:  labels.MatchEqual,
@@ -35,30 +53,36 @@ func modifyRequest(r *http.Request, prometheusServerURL *url.URL, prometheusQuer
 		},
 	}...)
 
-	if err := e.EnforceNode(expr); err != nil {
+	if err := req.ParseForm(); err != nil {
 		return err
 	}
 
-	q := r.URL.Query()
-	q.Set(prometheusQueryParameter, expr.String())
-	r.URL.RawQuery = q.Encode()
-	return nil
-}
+	form := req.Form
 
-func checkRequest(r *http.Request, prometheusServerURL *url.URL) error {
-	if r.URL.Path == "/api/v1/query" || r.URL.Path == "/api/v1/query_range" {
-		if err := modifyRequest(r, prometheusServerURL, "query"); err != nil {
-			return err
+	for key, values := range form {
+		value := values[0]
+		if key == prometheusFormParameter {
+			expr, err := parser.ParseExpr(value)
+			if err != nil {
+				return err
+			}
+			if err := e.EnforceNode(expr); err != nil {
+				return err
+			}
+			value = expr.String()
 		}
+		form.Set(key, value)
 	}
-	if r.URL.Path == "/api/v1/series" {
-		if err := modifyRequest(r, prometheusServerURL, "match[]"); err != nil {
-			return err
-		}
+
+	newFormData := form.Encode()
+
+	if req.Method == "POST" {
+		req.Body = ioutil.NopCloser(strings.NewReader(newFormData))
+		req.ContentLength = int64(len(newFormData))
+
+	} else if req.Method == "GET" {
+		req.URL.RawQuery = newFormData
 	}
-	r.Host = prometheusServerURL.Host
-	r.URL.Scheme = prometheusServerURL.Scheme
-	r.URL.Host = prometheusServerURL.Host
-	r.Header.Set("X-Forwarded-Host", r.Host)
+
 	return nil
 }
