@@ -18,18 +18,21 @@ func Serve(c *cli.Context) error {
 	authConfigLocation := c.String("auth-config")
 	authConfig, _ := pkg.ParseConfig(&authConfigLocation)
 
-	reverseProxy := httputil.NewSingleHostReverseProxy(prometheusServerURL)
-	handler := createHandler(reverseProxy, prometheusServerURL)
-	http.HandleFunc("/-/healthy", LogRequest(handler))
-	http.HandleFunc("/-/ready", LogRequest(handler))
-	http.HandleFunc("/", LogRequest(BasicAuth(handler, authConfig)))
+	rprt := ReversePrometheusRoundTripper{
+		prometheusServerURL: prometheusServerURL,
+	}
+
+	reverseProxy := httputil.ReverseProxy{
+		Director:  rprt.Director,
+		Transport: &rprt,
+	}
+
+	http.HandleFunc("/-/healthy", LogRequest(reverseProxy.ServeHTTP))
+	http.HandleFunc("/-/ready", LogRequest(reverseProxy.ServeHTTP))
+	http.HandleFunc("/", LogRequest(BasicAuth(reverseProxy.ServeHTTP, authConfig)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
 		return err
 	}
 	return nil
-}
-
-func createHandler(proxy *httputil.ReverseProxy, prometheusServerURL *url.URL) http.HandlerFunc {
-	return ReversePrometheus(proxy, prometheusServerURL)
 }
