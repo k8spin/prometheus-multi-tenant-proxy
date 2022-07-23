@@ -13,8 +13,15 @@ metadata:
     application: prometheus-multi-tenant-proxy
   name: prometheus-auth-config
   namespace: default
-data:
-  authn.yaml: dXNlcnM6CiAgLSB1c2VybmFtZTogSGFwcHkKICAgIHBhc3N3b3JkOiBQcm9tZXRoZXVzCiAgICBuYW1lc3BhY2U6IGRlZmF1bHQKICAtIHVzZXJuYW1lOiBTYWQKICAgIHBhc3N3b3JkOiBQcm9tZXRoZXVzCiAgICBuYW1lc3BhY2U6IGt1YmUtc3lzdGVtCg==
+stringData:
+  authn.yaml: |
+    users:
+    - username: Happy
+      password: Prometheus
+      namespace: default
+    - username: Sad
+      password: Prometheus
+      namespace: kube-system
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,7 +50,7 @@ spec:
         image: ghcr.io/k8spin/prometheus-multi-tenant-proxy:latest
         imagePullPolicy: Always
         command: ["/bin/bash"]
-        args: ["-c", "/prometheus-multi-tenant-proxy run --port=9092 --prometheus-endpoint=${PROMETHEUS_MULTI_TENANT_PROXY_PROMETHEUS_ENDPOINT} --auth-config=/etc/prometheus-auth-config/authn.yaml"]
+        args: ["-c", "/prometheus-multi-tenant-proxy run --port=9092 --prometheus-endpoint=${PROMETHEUS_MULTI_TENANT_PROXY_PROMETHEUS_ENDPOINT} --auth-config=/etc/prometheus-auth-config/authn.yaml --reload-interval=5"]
         ports:
           - name: http
             containerPort: 9092

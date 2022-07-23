@@ -4,8 +4,6 @@ import (
 	"context"
 	"crypto/subtle"
 	"net/http"
-
-	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 )
 
 type key int
@@ -17,10 +15,10 @@ const (
 )
 
 // BasicAuth can be used as a middleware chain to authenticate users before proxying a request
-func BasicAuth(handler http.HandlerFunc, authConfig *pkg.Authn) http.HandlerFunc {
+func BasicAuth(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		user, pass, ok := r.BasicAuth()
-		authorized, namespace := isAuthorized(user, pass, authConfig)
+		authorized, namespace := isAuthorized(user, pass)
 		if !ok || !authorized {
 			writeUnauthorisedResponse(w)
 			return
@@ -30,7 +28,8 @@ func BasicAuth(handler http.HandlerFunc, authConfig *pkg.Authn) http.HandlerFunc
 	}
 }
 
-func isAuthorized(user string, pass string, authConfig *pkg.Authn) (bool, string) {
+func isAuthorized(user string, pass string) (bool, string) {
+	authConfig := GetConfig()
 	for _, v := range authConfig.Users {
 		if subtle.ConstantTimeCompare([]byte(user), []byte(v.Username)) == 1 && subtle.ConstantTimeCompare([]byte(pass), []byte(v.Password)) == 1 {
 			return true, v.Namespace
