@@ -1,13 +1,14 @@
 package proxy
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 )
 
-func Test_isAuthorized(t *testing.T) {
-	authConfig := pkg.Authn{
+func init() {
+	config = &pkg.Authn{
 		Users: []pkg.User{
 			{
 				Username:  "User-a",
@@ -21,10 +22,13 @@ func Test_isAuthorized(t *testing.T) {
 			},
 		},
 	}
+	configLock = new(sync.RWMutex)
+}
+
+func Test_isAuthorized(t *testing.T) {
 	type args struct {
-		user       string
-		pass       string
-		authConfig *pkg.Authn
+		user string
+		pass string
 	}
 	tests := []struct {
 		name  string
@@ -37,7 +41,6 @@ func Test_isAuthorized(t *testing.T) {
 			args{
 				"User-a",
 				"pass-a",
-				&authConfig,
 			},
 			true,
 			"tenant-a",
@@ -46,7 +49,6 @@ func Test_isAuthorized(t *testing.T) {
 			args{
 				"invalid",
 				"pass-a",
-				&authConfig,
 			},
 			false,
 			"",
@@ -54,7 +56,7 @@ func Test_isAuthorized(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := isAuthorized(tt.args.user, tt.args.pass, tt.args.authConfig)
+			got, got1 := isAuthorized(tt.args.user, tt.args.pass)
 			if got != tt.want {
 				t.Errorf("isAuthorized() got = %v, want %v", got, tt.want)
 			}

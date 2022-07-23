@@ -40,6 +40,10 @@ func main() {
 					Name:  "auth-config",
 					Usage: "AuthN yaml configuration file path",
 					Value: "authn.yaml",
+				}, &cli.IntFlag{
+					Name:  "reload-interval",
+					Usage: "Interval time to reload the authn configuration file (minutes)",
+					Value: 5,
 				},
 			},
 		},
