@@ -51,8 +51,10 @@ func Serve(c *cli.Context) error {
 		Transport: &rprt,
 	}
 
-	http.HandleFunc("/-/healthy", LogRequest(reverseProxy.ServeHTTP))
-	http.HandleFunc("/-/ready", LogRequest(reverseProxy.ServeHTTP))
+	for _, selected := range c.StringSlice("unprotected-endpoints") {
+		log.Printf("Serving as unprotected endpoint: %s", selected)
+		http.HandleFunc(selected, LogRequest(reverseProxy.ServeHTTP))
+	}
 	http.HandleFunc("/", LogRequest(BasicAuth(reverseProxy.ServeHTTP)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)

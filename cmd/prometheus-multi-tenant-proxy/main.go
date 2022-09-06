@@ -36,6 +36,10 @@ func main() {
 					Name:  "prometheus-endpoint",
 					Usage: "Prometheus server endpoint",
 					Value: "http://localhost:9091",
+				}, &cli.StringSliceFlag{
+					Name:  "unprotected-endpoints",
+					Usage: "unprotected endpoints (mostly for live/readiness probes",
+					Value: cli.NewStringSlice("/-/healthy", "/-/ready"),
 				}, &cli.StringFlag{
 					Name:  "auth-config",
 					Usage: "AuthN yaml configuration file path",
