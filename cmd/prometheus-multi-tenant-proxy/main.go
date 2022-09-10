@@ -38,7 +38,7 @@ func main() {
 					Value: "http://localhost:9091",
 				}, &cli.StringSliceFlag{
 					Name:  "unprotected-endpoints",
-					Usage: "unprotected endpoints (mostly for live/readiness probes",
+					Usage: "Unprotected endpoints (mostly for live/readiness probes)",
 					Value: cli.NewStringSlice("/-/healthy", "/-/ready"),
 				}, &cli.StringFlag{
 					Name:  "auth-config",
