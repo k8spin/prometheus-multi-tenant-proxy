@@ -1,6 +1,6 @@
 module github.com/k8spin/prometheus-multi-tenant-proxy
 
-go 1.17
+go 1.19
 
 require (
 	github.com/prometheus-community/prom-label-proxy v0.5.0
