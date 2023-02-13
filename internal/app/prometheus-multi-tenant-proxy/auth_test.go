@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"reflect"
 	"sync"
 	"testing"
 
@@ -34,7 +35,7 @@ func Test_isAuthorized(t *testing.T) {
 		name  string
 		args  args
 		want  bool
-		want1 string
+		want1 []string
 	}{
 		{
 			"Valid User",
@@ -43,7 +44,7 @@ func Test_isAuthorized(t *testing.T) {
 				"pass-a",
 			},
 			true,
-			"tenant-a",
+			[]string{"tenant-a"},
 		}, {
 			"Invalid User",
 			args{
@@ -51,7 +52,7 @@ func Test_isAuthorized(t *testing.T) {
 				"pass-a",
 			},
 			false,
-			"",
+			nil,
 		},
 	}
 	for _, tt := range tests {
@@ -60,8 +61,8 @@ func Test_isAuthorized(t *testing.T) {
 			if got != tt.want {
 				t.Errorf("isAuthorized() got = %v, want %v", got, tt.want)
 			}
-			if got1 != tt.want1 {
-				t.Errorf("isAuthorized() got1 = %v, want %v", got1, tt.want1)
+			if !reflect.DeepEqual(got1, tt.want1) {
+				t.Errorf("isAuthorized() got1 = %v, want1 %v", got1, tt.want1)
 			}
 		})
 	}

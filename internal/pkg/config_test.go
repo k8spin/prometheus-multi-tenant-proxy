@@ -10,30 +10,71 @@ func TestParseConfig(t *testing.T) {
 	configInvalidConfigFileLocation := "../../configs/bad.yaml"
 	configSampleLocation := "../../configs/sample.yaml"
 	configMultipleUserLocation := "../../configs/multiple.user.yaml"
+	configMultipleNamespacesLocation := "../../configs/multiple.namespaces.yaml"
 	expectedSampleAuth := Authn{
 		[]User{
 			{
-				Username:  "Happy",
-				Password:  "Prometheus",
-				Namespace: "default",
+				Username:   "Happy",
+				Password:   "Prometheus",
+				Namespace:  "default",
+				Namespaces: []string{},
 			}, {
-				Username:  "Sad",
-				Password:  "Prometheus",
-				Namespace: "kube-system",
+				Username:   "Sad",
+				Password:   "Prometheus",
+				Namespace:  "kube-system",
+				Namespaces: []string{},
 			},
 		},
 	}
 	expectedMultipleUserAuth := Authn{
 		[]User{
 			{
-				Username:  "User-a",
-				Password:  "pass-a",
-				Namespace: "tenant-a",
+				Username:   "User-a",
+				Password:   "pass-a",
+				Namespace:  "tenant-a",
+				Namespaces: []string{},
 			},
 			{
-				Username:  "User-b",
-				Password:  "pass-b",
-				Namespace: "tenant-b",
+				Username:   "User-b",
+				Password:   "pass-b",
+				Namespace:  "tenant-b",
+				Namespaces: []string{},
+			},
+		},
+	}
+	expectedMultipleNamespaceAuth := Authn{
+		[]User{
+			{
+				Username:   "Happy",
+				Password:   "Prometheus",
+				Namespace:  "default",
+				Namespaces: []string{},
+			},
+			{
+				Username:   "Sad",
+				Password:   "Prometheus",
+				Namespace:  "kube-system",
+				Namespaces: []string{},
+			},
+			{
+				Username:  "Multiple",
+				Password:  "Namespaces",
+				Namespace: "monitoring",
+				Namespaces: []string{
+					"default",
+					"kube-system",
+					"kube-public",
+				},
+			},
+			{
+				Username:  "Multiple",
+				Password:  "NamespacesWithoutNamespace",
+				Namespace: "",
+				Namespaces: []string{
+					"default",
+					"kube-system",
+					"kube-public",
+				},
 			},
 		},
 	}
@@ -59,6 +100,13 @@ func TestParseConfig(t *testing.T) {
 				&configMultipleUserLocation,
 			},
 			&expectedMultipleUserAuth,
+			false,
+		}, {
+			"Multiples namespaces",
+			args{
+				&configMultipleNamespacesLocation,
+			},
+			&expectedMultipleNamespaceAuth,
 			false,
 		}, {
 			"Invalid location",

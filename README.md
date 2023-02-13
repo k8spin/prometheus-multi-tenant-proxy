@@ -54,9 +54,10 @@ type Authn struct {
 
 // User Identifies a user including the tenant
 type User struct {
-	Username  string `yaml:"username"`
-	Password  string `yaml:"password"`
-	Namespace string `yaml:"namespace"`
+	Username   string   `yaml:"username"`
+	Password   string   `yaml:"password"`
+	Namespace  string   `yaml:"namespace"`
+	Namespaces []string `yaml:"namespaces"`
 }
 ```
 
@@ -70,6 +71,32 @@ users:
   - username: User-b
     password: pass-b
     namespace: tenant-b
+```
+
+or if you need to allow multiple namespaces for a single user,
+an example is available at [configs/multiple.namespaces.yaml](configs/multiple.namespaces.yaml) file:
+
+```yaml
+users:
+  - username: Happy
+    password: Prometheus
+    namespace: default
+  - username: Sad
+    password: Prometheus
+    namespace: kube-system
+  - username: Multiple
+    password: Namespaces
+    namespace: monitoring
+    namespaces:
+      - default
+      - kube-system
+      - kube-public
+  - username: Multiple
+    password: NamespacesWithoutNamespace
+    namespaces:
+      - default
+      - kube-system
+      - kube-public
 ```
 
 A tenant can contain multiple users. But a user is tied to a single tenant.
