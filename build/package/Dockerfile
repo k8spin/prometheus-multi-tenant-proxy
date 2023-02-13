@@ -1,4 +1,4 @@
-FROM golang:1.17-bullseye as builder
+FROM golang:1.18.8-bullseye as builder
 
 ARG RELEASE_DATE=unknown
 ARG VERSION=dev
