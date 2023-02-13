@@ -43,14 +43,30 @@ func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
 
 func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometheusFormParameter string) error {
 
-	namespace := req.Context().Value(Namespace)
+	namespaces := req.Context().Value(Namespaces).([]string)
+	if len(namespaces) == 0 {
+		return nil
+	}
 
-	e := injector.NewEnforcer(false, []*labels.Matcher{
-		{
+	var matcher labels.Matcher
+	if len(namespaces) == 1 {
+		// If there is only one namespace, we can use the more efficient MatchEqual matcher.
+		matcher = labels.Matcher{
 			Name:  "namespace",
 			Type:  labels.MatchEqual,
-			Value: namespace.(string),
-		},
+			Value: namespaces[0],
+		}
+	} else {
+		// If there are multiple namespaces, we need to use the MatchRegexp matcher.
+		matcher = labels.Matcher{
+			Name:  "namespace",
+			Type:  labels.MatchRegexp,
+			Value: strings.Join(namespaces, "|"),
+		}
+	}
+
+	e := injector.NewEnforcer(false, []*labels.Matcher{
+		&matcher,
 	}...)
 
 	if err := req.ParseForm(); err != nil {
