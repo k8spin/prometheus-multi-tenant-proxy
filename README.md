@@ -38,11 +38,14 @@ Where:
 
 - `--port`: Port used to expose this proxy.
 - `--prometheus-endpoint`: URL of your Prometheus instance.
-- `--auth-config`: Authentication configuration file path.
 - `--reload-interval`: Interval in minutes to reload the auth config file.
 - `--unprotected-endpoints`: Comma separated list of endpoints that do not require authentication.
+- `--auth-type`: Type of authentication to use, one of `basic`,  `jwt`
+- `--auth-config`: Authentication configuration.
+   * for `basic` authentication: path to a configuration file following the *Authn structure*
+   * for `jwt` authentication: either a path or an URL to a json containing a *Json Web Keys Set (JWKS)*
 
-#### Configure the proxy
+#### Configure the proxy for basic authentication
 
 The auth configuration is straightforward. Just create a YAML file `my-auth-config.yaml` with the following structure:
 
@@ -101,9 +104,51 @@ users:
 
 A tenant can contain multiple users. But a user is tied to a single tenant.
 
+#### Configure the proxy for JWT authentication
+
+Under the hood, the proxy uses [keyfunc](https://github.com/MicahParks/keyfunc) to load
+keys (in JWKS format), and [go-jwt](https://github.com/golang-jwt/jwt) for validating JWT tokens.
+
+The **Json Web Keys Set (JWKS)** can be loaded either from a file or an URL,
+and will be reloaded automatically following the `--reload-interval` parameter.
+
+An example of a valid JWKS containing both an HS256 (hmac, symmetric) and an RS256 (rsa, asymmetric) key is available
+at [internal/app/prometheus-multi-tenant-proxy/.jwks_example.json](#internal/app/prometheus-multi-tenant-proxy/.jwks_example.json).
+More examples are provided in the [keyfunc](https://github.com/MicahParks/keyfunc) readme.
+You can also use [mkjwk.org](https://mkjwk.org) to generate valid JWKs.
+
+Once the proxy is aware of one or more JWKS keys, it is ready to authorize requests based on signed JWT tokens.
+The **token** is extracted from one of two locations with the given precedence:
+
+1. the `Authorization` header, in the form `Authorization: Bearer <TOKEN>`, or, if not present,
+2. the `Token` header, in the form `Token: <TOKEN>`.
+
+For the token to be valid, it must:
+
+* contain a `kid` (key ID) in the header that matches the kid of a known key in the JWKS,
+* contain a claim in the payload called `namespaces`, with one or more values. For example:
+  ```json
+  {
+    "namespaces": ["foo", "bar"]
+  }
+  ```
+* have been signed with the key in the JWKS matching the `kid` found in the JWT header.
+
+To test the proxy using JWT tokens, you can use the `.jwks_example.json` file above to run
+the proxy and generate a JWT token using [jwt.io](https://jwt.io). Ensure you chose the `HS256` algorithm and
+paste the following token:
+```json
+eyJhbGciOiJIUzI1NiIsImtpZCI6ImhtYWMta2V5In0.eyJuYW1lc3BhY2VzIjpbInByb21ldGhldXMiLCJhcHAtMSJdfQ.aMVibvV_meujcnRA1pgnSjBojtzvteZSf2xvq2MwZgc
+```
+To verify the signature, replace `your-256-bit-secret` with `lala` in the "verify signature" section.
+You can now use curl, for example:
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://localhost:9092/api/v1/query\?query\=net_conntrack_dialer_conn_attempted_total
+```
+
 ## Build it
 
-If you want to build it from this repository, follow the instructions bellow:
+If you want to build it from this repository, follow the instructions below:
 
 ```bash
 $ docker run -it --entrypoint /bin/bash --rm golang:1.18.8-buster

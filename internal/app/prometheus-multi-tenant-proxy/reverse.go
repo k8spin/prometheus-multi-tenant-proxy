@@ -39,6 +39,7 @@ func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
 
 	req.Header.Set("X-Forwarded-Host", req.Host)
 	req.Header.Del("Authorization")
+	req.Header.Del("Token")
 }
 
 func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometheusFormParameter string) error {

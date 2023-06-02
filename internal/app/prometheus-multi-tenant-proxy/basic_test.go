@@ -2,14 +2,17 @@ package proxy
 
 import (
 	"reflect"
-	"sync"
 	"testing"
 
 	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 )
 
+var (
+	auth *BasicAuth
+)
+
 func init() {
-	config = &pkg.Authn{
+	config := &pkg.Authn{
 		Users: []pkg.User{
 			{
 				Username:  "User-a",
@@ -23,10 +26,10 @@ func init() {
 			},
 		},
 	}
-	configLock = new(sync.RWMutex)
+	auth = newBasicAuthFromConfig(config)
 }
 
-func Test_isAuthorized(t *testing.T) {
+func TestBasic_isAuthorized(t *testing.T) {
 	type args struct {
 		user string
 		pass string
@@ -57,7 +60,7 @@ func Test_isAuthorized(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := isAuthorized(tt.args.user, tt.args.pass)
+			got, got1 := auth.isAuthorized(tt.args.user, tt.args.pass)
 			if got != tt.want {
 				t.Errorf("isAuthorized() got = %v, want %v", got, tt.want)
 			}

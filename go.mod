@@ -3,6 +3,8 @@ module github.com/k8spin/prometheus-multi-tenant-proxy
 go 1.20
 
 require (
+	github.com/MicahParks/keyfunc/v2 v2.1.0
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/prometheus-community/prom-label-proxy v0.7.0
 	github.com/prometheus/prometheus v0.44.0
 	github.com/urfave/cli/v2 v2.25.6
