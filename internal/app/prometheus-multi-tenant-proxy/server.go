@@ -6,17 +6,9 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"os"
-	"sync"
 	"time"
 
-	"github.com/k8spin/prometheus-multi-tenant-proxy/internal/pkg"
 	"github.com/urfave/cli/v2"
-)
-
-var (
-	config     *pkg.Authn
-	configLock = new(sync.RWMutex)
 )
 
 // Serve serves
@@ -25,22 +17,32 @@ func Serve(c *cli.Context) error {
 	serveAt := fmt.Sprintf(":%d", c.Int("port"))
 	authConfigLocation := c.String("auth-config")
 	reloadInterval := c.Int("reload-interval")
+	authType := c.String("auth-type")
 
-	loadConfig(authConfigLocation)
-	ticker := time.NewTicker(time.Duration(reloadInterval) * time.Minute)
-	quit := make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				loadConfig(authConfigLocation)
-				log.Printf("Reloaded config file %s", authConfigLocation)
-			case <-quit:
-				ticker.Stop()
-				return
+	var auth Auth
+	if authType == "basic" {
+		auth = NewBasicAuth(authConfigLocation)
+	} else if authType == "jwt" {
+		auth = NewJwtAuth(authConfigLocation)
+	} else {
+		log.Fatalf("auth-type must be one of: basic, jwt") // will exit
+	}
+
+	if reloadInterval > 0 {
+		ticker := time.NewTicker(time.Duration(reloadInterval) * time.Minute)
+		quit := make(chan struct{})
+		go func() {
+			for {
+				select {
+				case <-ticker.C:
+					auth.Load()
+				case <-quit:
+					ticker.Stop()
+					return
+				}
 			}
-		}
-	}()
+		}()
+	}
 
 	rprt := ReversePrometheusRoundTripper{
 		prometheusServerURL: prometheusServerURL,
@@ -55,27 +57,11 @@ func Serve(c *cli.Context) error {
 		log.Printf("Serving as unprotected endpoint: %s", selected)
 		http.HandleFunc(selected, LogRequest(reverseProxy.ServeHTTP))
 	}
-	http.HandleFunc("/", LogRequest(BasicAuth(reverseProxy.ServeHTTP)))
+
+	http.HandleFunc("/", LogRequest(AuthHandler(auth, reverseProxy.ServeHTTP)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
 		return err
 	}
 	return nil
-}
-
-func loadConfig(location string) {
-	temp, err := pkg.ParseConfig(&location)
-	if err != nil {
-		log.Fatalf("Could not parse config file %s: %v", location, err)
-		os.Exit(1)
-	}
-	configLock.Lock()
-	config = temp
-	configLock.Unlock()
-}
-
-func GetConfig() *pkg.Authn {
-	configLock.RLock()
-	defer configLock.RUnlock()
-	return config
 }

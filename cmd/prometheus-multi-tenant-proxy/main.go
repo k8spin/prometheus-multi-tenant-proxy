@@ -41,12 +41,16 @@ func main() {
 					Usage: "Unprotected endpoints (mostly for live/readiness probes)",
 					Value: cli.NewStringSlice("/-/healthy", "/-/ready"),
 				}, &cli.StringFlag{
+					Name:  "auth-type",
+					Usage: "Auth mechanism: one of 'basic' or 'jwt'",
+					Value: "basic",
+				}, &cli.StringFlag{
 					Name:  "auth-config",
-					Usage: "AuthN yaml configuration file path",
+					Usage: "AuthN yaml configuration file path (basic auth) or jwks file path/url (jwt auth)",
 					Value: "authn.yaml",
 				}, &cli.IntFlag{
 					Name:  "reload-interval",
-					Usage: "Interval time to reload the authn configuration file (minutes)",
+					Usage: "Interval time to reload the configuration (minutes)",
 					Value: 5,
 				},
 			},
