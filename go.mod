@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/prometheus-community/prom-label-proxy v0.6.0
 	github.com/prometheus/prometheus v0.42.0
-	github.com/urfave/cli/v2 v2.24.3
+	github.com/urfave/cli/v2 v2.25.6
 	gopkg.in/yaml.v2 v2.4.0
 )
 
