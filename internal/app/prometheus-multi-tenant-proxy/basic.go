@@ -13,7 +13,9 @@ import (
 const (
 	//Namespaces Key used to pass prometheus tenant id though the middleware context
 	Namespaces key = iota
-	realm          = "Prometheus multi-tenant proxy"
+	//Labels Key used to pass prometheus additional labels though the middleware context
+	Labels key = iota
+	realm      = "Prometheus multi-tenant proxy"
 )
 
 // BasicAuth can be used as a middleware chain to authenticate users
@@ -60,22 +62,22 @@ func (auth *BasicAuth) Load() bool {
 
 // IsAuthorized uses the basic authentication and the Authn file to authenticate a user
 // and return the namespace he has access to
-func (auth *BasicAuth) IsAuthorized(r *http.Request) (bool, []string) {
+func (auth *BasicAuth) IsAuthorized(r *http.Request) (bool, []string, map[string]string) {
 	user, pass, ok := r.BasicAuth()
 	if !ok {
-		return false, nil
+		return false, nil, nil
 	}
 	return auth.isAuthorized(user, pass)
 }
 
-func (auth *BasicAuth) isAuthorized(user, pass string) (bool, []string) {
+func (auth *BasicAuth) isAuthorized(user, pass string) (bool, []string, map[string]string) {
 	authConfig := auth.getConfig()
 	for _, v := range authConfig.Users {
 		if subtle.ConstantTimeCompare([]byte(user), []byte(v.Username)) == 1 && subtle.ConstantTimeCompare([]byte(pass), []byte(v.Password)) == 1 {
-			return true, append(v.Namespaces, v.Namespace)
+			return true, append(v.Namespaces, v.Namespace), nil
 		}
 	}
-	return false, nil
+	return false, nil, nil
 }
 
 // WriteUnauthorisedResponse writes a 401 Unauthorized HTTP response with

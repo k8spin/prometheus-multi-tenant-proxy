@@ -39,6 +39,7 @@ func TestBasic_isAuthorized(t *testing.T) {
 		args  args
 		want  bool
 		want1 []string
+		want2 map[string]string
 	}{
 		{
 			"Valid User",
@@ -48,6 +49,7 @@ func TestBasic_isAuthorized(t *testing.T) {
 			},
 			true,
 			[]string{"tenant-a"},
+			nil,
 		}, {
 			"Invalid User",
 			args{
@@ -56,16 +58,20 @@ func TestBasic_isAuthorized(t *testing.T) {
 			},
 			false,
 			nil,
+			nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := auth.isAuthorized(tt.args.user, tt.args.pass)
+			got, got1, got2 := auth.isAuthorized(tt.args.user, tt.args.pass)
 			if got != tt.want {
 				t.Errorf("isAuthorized() got = %v, want %v", got, tt.want)
 			}
 			if !reflect.DeepEqual(got1, tt.want1) {
 				t.Errorf("isAuthorized() got1 = %v, want1 %v", got1, tt.want1)
+			}
+			if !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("isAuthorized() got2 = %v, want2 %v", got2, tt.want2)
 			}
 		})
 	}

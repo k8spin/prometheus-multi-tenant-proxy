@@ -35,13 +35,13 @@ const (
 )
 
 func (auth *JwtAuth) assertHmac(t *testing.T, expectAuthorized bool) {
-	authorized, _ := auth.isAuthorized(validHmacToken)
+	authorized, _, _ := auth.isAuthorized(validHmacToken)
 	if authorized != expectAuthorized {
 		t.Errorf("HMAC authorized=%v, expected=%v", authorized, expectAuthorized)
 	}
 }
 func (auth *JwtAuth) assertRSA(t *testing.T, expectAuthorized bool) {
-	authorized, _ := auth.isAuthorized(validRsaToken)
+	authorized, _, _ := auth.isAuthorized(validRsaToken)
 	if authorized != expectAuthorized {
 		t.Errorf("RSA authorized=%v, expected=%v", authorized, expectAuthorized)
 	}
@@ -132,7 +132,7 @@ func TestJWT_IsAuthorized(t *testing.T) {
 
 	for _, tc := range validTestCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			authorized, namespaces := auth.isAuthorized(tc.token)
+			authorized, namespaces, _ := auth.isAuthorized(tc.token)
 			if !authorized {
 				t.Fatal("Should be authorized")
 			}
@@ -156,7 +156,7 @@ func TestJWT_IsAuthorized(t *testing.T) {
 
 	for _, tc := range invalidTestCases {
 		t.Run(tc.reason, func(t *testing.T) {
-			if authorized, _ := auth.isAuthorized(tc.token); authorized {
+			if authorized, _, _ := auth.isAuthorized(tc.token); authorized {
 				t.Error("Signature should be invalid - invalid secret signature")
 			}
 		})

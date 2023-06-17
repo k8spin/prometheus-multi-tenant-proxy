@@ -129,11 +129,11 @@ func (auth *JwtAuth) loadFromFile(location *string) bool {
 
 // IsAuthorized validates the user by verifying the JWT token in
 // the request and returning the namespaces claim found in token the payload.
-func (auth *JwtAuth) IsAuthorized(r *http.Request) (bool, []string) {
+func (auth *JwtAuth) IsAuthorized(r *http.Request) (bool, []string, map[string]string) {
 	tokenString := extractTokens(&r.Header)
 	if tokenString == "" {
 		log.Printf("Token is missing from header request")
-		return false, nil
+		return false, nil, nil
 	}
 	return auth.isAuthorized(tokenString)
 }
@@ -144,19 +144,19 @@ func (auth *JwtAuth) WriteUnauthorisedResponse(w http.ResponseWriter) {
 	w.Write([]byte("Unauthorised\n"))
 }
 
-func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string) {
+func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string, map[string]string) {
 	token, err := jwt.ParseWithClaims(tokenString, &NamespaceClaim{}, auth.jwks.Keyfunc)
 	if err != nil || !token.Valid {
 		log.Printf("%s\n", err)
-		return false, nil
+		return false, nil, nil
 	}
 
 	claims := token.Claims.(*NamespaceClaim)
 	if len(claims.Namespaces) == 0 {
 		log.Printf("token claim is invalid: namespaces is missing or empty")
-		return false, nil
+		return false, nil, nil
 	}
-	return true, claims.Namespaces
+	return true, claims.Namespaces, nil
 }
 
 func isValidSigningMethod(signingMethod string) bool {
