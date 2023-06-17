@@ -1,6 +1,6 @@
 # Prometheus — Multi-tenant proxy
 
-![Build Status](https://action-badges.now.sh/k8spin/prometheus-multi-tenant-proxy)
+![Build Status](https://github.com/k8spin/prometheus-multi-tenant-proxy/actions/workflows/release.yml/badge.svg)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/k8spin.svg?style=social&label=Follow%20%40k8spin)](https://twitter.com/k8spin)
@@ -113,7 +113,7 @@ The **Json Web Keys Set (JWKS)** can be loaded either from a file or an URL,
 and will be reloaded automatically following the `--reload-interval` parameter.
 
 An example of a valid JWKS containing both an HS256 (hmac, symmetric) and an RS256 (rsa, asymmetric) key is available
-at [internal/app/prometheus-multi-tenant-proxy/.jwks_example.json](#internal/app/prometheus-multi-tenant-proxy/.jwks_example.json).
+at [internal/app/prometheus-multi-tenant-proxy/.jwks_example.json](internal/app/prometheus-multi-tenant-proxy/.jwks_example.json).
 More examples are provided in the [keyfunc](https://github.com/MicahParks/keyfunc) readme.
 You can also use [mkjwk.org](https://mkjwk.org) to generate valid JWKs.
 
@@ -151,70 +151,72 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:9092/api/v1/query\?query
 If you want to build it from this repository, follow the instructions below:
 
 ```bash
-$ docker run -it --entrypoint /bin/bash --rm golang:1.18.8-buster
+$ docker run -it --entrypoint /bin/bash --rm golang:1.20.5-bookworm
 root@9b2da74fb4b8:/go# git clone https://github.com/k8spin/prometheus-multi-tenant-proxy.git
 Cloning into 'prometheus-multi-tenant-proxy'...
-remote: Enumerating objects: 310, done.
-remote: Counting objects: 100% (15/15), done.
-remote: Compressing objects: 100% (9/9), done.
-remote: Total 310 (delta 6), reused 14 (delta 6), pack-reused 295
-Receiving objects: 100% (310/310), 255.71 KiB | 1.66 MiB/s, done.
-Resolving deltas: 100% (122/122), done.
+remote: Enumerating objects: 403, done.
+remote: Counting objects: 100% (84/84), done.
+remote: Compressing objects: 100% (37/37), done.
+remote: Total 403 (delta 55), reused 55 (delta 41), pack-reused 319
+Receiving objects: 100% (403/403), 347.67 KiB | 2.92 MiB/s, done.
+Resolving deltas: 100% (173/173), done.
 root@9b2da74fb4b8:/go# cd prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy/
 root@9b2da74fb4b8:/go/prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy# go build
-go: downloading github.com/urfave/cli/v2 v2.24.3
-go: downloading github.com/prometheus/prometheus v0.42.0
-go: downloading github.com/prometheus-community/prom-label-proxy v0.6.0
-go: downloading gopkg.in/yaml.v2 v2.4.0
-go: downloading github.com/efficientgo/tools/core v0.0.0-20220225185207-fe763185946b
-go: downloading github.com/go-openapi/runtime v0.25.0
-go: downloading github.com/go-openapi/strfmt v0.21.3
+go: downloading github.com/urfave/cli/v2 v2.25.6
+go: downloading github.com/MicahParks/keyfunc/v2 v2.1.0
+go: downloading github.com/golang-jwt/jwt/v5 v5.0.0
+go: downloading github.com/prometheus/prometheus v0.44.0
+go: downloading github.com/prometheus-community/prom-label-proxy v0.7.0
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading github.com/go-openapi/runtime v0.26.0
+go: downloading github.com/efficientgo/core v1.0.0-rc.2
+go: downloading github.com/go-openapi/strfmt v0.21.7
 go: downloading github.com/metalmatze/signal v0.0.0-20210307161603-1c9aa721a97a
-go: downloading github.com/pkg/errors v0.9.1
 go: downloading github.com/prometheus/alertmanager v0.25.0
-go: downloading github.com/prometheus/client_golang v1.14.0
-go: downloading github.com/cpuguy83/go-md2man/v2 v2.0.2
-go: downloading github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673
-go: downloading github.com/opentracing/opentracing-go v1.2.0
-go: downloading go.opentelemetry.io/otel v1.11.2
-go: downloading go.opentelemetry.io/otel/trace v1.11.2
-go: downloading github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d
+go: downloading github.com/prometheus/client_golang v1.15.1
+go: downloading golang.org/x/exp v0.0.0-20230321023759-10a507213a29
+go: downloading github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 go: downloading github.com/go-openapi/errors v0.20.3
 go: downloading github.com/mitchellh/mapstructure v1.5.0
 go: downloading github.com/oklog/ulid v1.3.1
-go: downloading go.mongodb.org/mongo-driver v1.11.0
+go: downloading go.mongodb.org/mongo-driver v1.11.3
+go: downloading github.com/opentracing/opentracing-go v1.2.0
+go: downloading go.opentelemetry.io/otel v1.14.0
+go: downloading go.opentelemetry.io/otel/trace v1.14.0
+go: downloading github.com/cpuguy83/go-md2man/v2 v2.0.2
+go: downloading github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673
+go: downloading github.com/beorn7/perks v1.0.1
 go: downloading github.com/cespare/xxhash/v2 v2.2.0
-go: downloading github.com/grafana/regexp v0.0.0-20221122212121-6b5c0a4cb7fd
-go: downloading github.com/prometheus/common v0.39.0
+go: downloading github.com/prometheus/client_model v0.3.0
+go: downloading github.com/prometheus/common v0.42.0
+go: downloading github.com/prometheus/procfs v0.9.0
+go: downloading google.golang.org/protobuf v1.30.0
 go: downloading github.com/go-openapi/swag v0.22.3
-go: downloading github.com/go-openapi/validate v0.22.0
+go: downloading github.com/go-openapi/validate v0.22.1
+go: downloading github.com/pkg/errors v0.9.1
+go: downloading gopkg.in/yaml.v2 v2.4.0
 go: downloading github.com/go-openapi/analysis v0.21.4
 go: downloading github.com/go-openapi/loads v0.21.2
-go: downloading github.com/go-openapi/spec v0.20.7
-go: downloading github.com/russross/blackfriday/v2 v2.1.0
-go: downloading github.com/beorn7/perks v1.0.1
-go: downloading github.com/golang/protobuf v1.5.2
-go: downloading github.com/prometheus/client_model v0.3.0
-go: downloading github.com/prometheus/procfs v0.8.0
-go: downloading google.golang.org/protobuf v1.28.1
+go: downloading github.com/go-openapi/spec v0.20.8
 go: downloading github.com/go-logr/logr v1.2.3
-go: downloading github.com/go-kit/log v0.2.1
-go: downloading golang.org/x/exp v0.0.0-20230124195608-d38c7dcee874
-go: downloading github.com/mailru/easyjson v0.7.7
-go: downloading gopkg.in/yaml.v3 v3.0.1
-go: downloading github.com/go-openapi/jsonpointer v0.19.5
-go: downloading github.com/go-openapi/jsonreference v0.20.0
+go: downloading github.com/russross/blackfriday/v2 v2.1.0
+go: downloading github.com/grafana/regexp v0.0.0-20221122212121-6b5c0a4cb7fd
+go: downloading github.com/golang/protobuf v1.5.3
 go: downloading github.com/matttproud/golang_protobuf_extensions v1.0.4
+go: downloading golang.org/x/sys v0.7.0
+go: downloading github.com/mailru/easyjson v0.7.7
+go: downloading github.com/go-openapi/jsonpointer v0.19.6
 go: downloading github.com/go-logr/stdr v1.2.2
-go: downloading golang.org/x/sys v0.4.0
+go: downloading github.com/go-openapi/jsonreference v0.20.2
+go: downloading github.com/go-kit/log v0.2.1
+go: downloading github.com/go-logfmt/logfmt v0.6.0
+go: downloading github.com/stretchr/testify v1.8.2
 go: downloading github.com/dennwc/varint v1.0.0
 go: downloading go.uber.org/atomic v1.10.0
-go: downloading github.com/stretchr/testify v1.8.1
-go: downloading github.com/go-logfmt/logfmt v0.5.1
-go: downloading github.com/josharian/intern v1.0.0
 go: downloading github.com/gogo/protobuf v1.3.2
 go: downloading github.com/davecgh/go-spew v1.1.1
-go: downloading go.uber.org/goleak v1.2.0
+go: downloading go.uber.org/goleak v1.2.1
+go: downloading github.com/josharian/intern v1.0.0
 go: downloading github.com/pmezard/go-difflib v1.0.0
 root@9b2da74fb4b8:/go/prometheus-multi-tenant-proxy/cmd/prometheus-multi-tenant-proxy# ./prometheus-multi-tenant-proxy
 NAME:
