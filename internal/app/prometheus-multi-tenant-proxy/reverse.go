@@ -45,30 +45,36 @@ func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
 func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometheusFormParameter string) error {
 
 	namespaces := req.Context().Value(Namespaces).([]string)
-	if len(namespaces) == 0 {
-		return nil
+	l := req.Context().Value(Labels).(map[string]string)
+
+	// Convert the labels map into a slice of label matchers.
+	var labelMatchers []*labels.Matcher
+
+	for k, v := range l {
+		labelMatchers = append(labelMatchers, &labels.Matcher{
+			Name:  k,
+			Type:  labels.MatchEqual,
+			Value: v,
+		})
 	}
 
-	var matcher labels.Matcher
 	if len(namespaces) == 1 {
 		// If there is only one namespace, we can use the more efficient MatchEqual matcher.
-		matcher = labels.Matcher{
+		labelMatchers = append(labelMatchers, &labels.Matcher{
 			Name:  "namespace",
 			Type:  labels.MatchEqual,
 			Value: namespaces[0],
-		}
-	} else {
+		})
+	} else if len(namespaces) > 1 {
 		// If there are multiple namespaces, we need to use the MatchRegexp matcher.
-		matcher = labels.Matcher{
+		labelMatchers = append(labelMatchers, &labels.Matcher{
 			Name:  "namespace",
 			Type:  labels.MatchRegexp,
 			Value: strings.Join(namespaces, "|"),
-		}
+		})
 	}
 
-	e := injector.NewEnforcer(false, []*labels.Matcher{
-		&matcher,
-	}...)
+	e := injector.NewEnforcer(false, labelMatchers...)
 
 	if err := req.ParseForm(); err != nil {
 		return err
@@ -83,10 +89,18 @@ func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometh
 			if err != nil {
 				return err
 			}
-			if err := e.EnforceNode(expr); err != nil {
-				return err
+			log.Printf("[QUERY]\t%s ORIGINAL: %s\n", req.RemoteAddr, expr)
+			if len(namespaces) == 0 && len(l) == 0 {
+				log.Printf("[ERROR]\t%s\n", "no namespaces or labels found in request context")
+				// This is a hack to prevent the query from being executed.
+				value = ""
+			} else {
+				if err := e.EnforceNode(expr); err != nil {
+					return err
+				}
+				value = expr.String()
 			}
-			value = expr.String()
+			log.Printf("[QUERY]\t%s MODIFIED: %s\n", req.RemoteAddr, value)
 		}
 		form.Set(key, value)
 	}

@@ -74,7 +74,17 @@ func (auth *BasicAuth) isAuthorized(user, pass string) (bool, []string, map[stri
 	authConfig := auth.getConfig()
 	for _, v := range authConfig.Users {
 		if subtle.ConstantTimeCompare([]byte(user), []byte(v.Username)) == 1 && subtle.ConstantTimeCompare([]byte(pass), []byte(v.Password)) == 1 {
-			return true, append(v.Namespaces, v.Namespace), nil
+			// User is authorized, return the namespaces
+			namespaces := make([]string, 0)
+			// If the user has a namespace, add it to the list
+			if v.Namespace != "" {
+				namespaces = append(namespaces, v.Namespace)
+			}
+			// If the user has namespaces, add them to the list
+			if v.Namespaces != nil {
+				namespaces = append(namespaces, v.Namespaces...)
+			}
+			return true, namespaces, v.Labels
 		}
 	}
 	return false, nil, nil

@@ -1,0 +1,17 @@
+users:
+  - username: Happy
+    password: Prometheus
+    labels:
+      app: happy
+      team: america
+  - username: Sad
+    password: Prometheus
+    labels:
+      namespace: kube-system
+  - username: bored
+    password: Prometheus
+    namespaces:
+      - default
+      - kube-system
+    labels:
+      dep: system
