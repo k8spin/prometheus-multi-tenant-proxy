@@ -11,6 +11,8 @@ func TestParseConfig(t *testing.T) {
 	configSampleLocation := "../../configs/sample.yaml"
 	configMultipleUserLocation := "../../configs/multiple.user.yaml"
 	configMultipleNamespacesLocation := "../../configs/multiple.namespaces.yaml"
+	configSampleLabelsLocation := "../../configs/sample.labels.yaml"
+
 	expectedSampleAuth := Authn{
 		[]User{
 			{
@@ -25,6 +27,39 @@ func TestParseConfig(t *testing.T) {
 				Namespace:  "kube-system",
 				Labels:     map[string]string{},
 				Namespaces: []string{},
+			},
+		},
+	}
+	expectedSampleLabelsAuth := Authn{
+		[]User{
+			{
+				Username:  "Happy",
+				Password:  "Prometheus",
+				Namespace: "",
+				Labels: map[string]string{
+					"app":  "happy",
+					"team": "america",
+				},
+				Namespaces: []string{},
+			}, {
+				Username:  "Sad",
+				Password:  "Prometheus",
+				Namespace: "",
+				Labels: map[string]string{
+					"namespace": "kube-system",
+				},
+				Namespaces: []string{},
+			}, {
+				Username:  "bored",
+				Password:  "Prometheus",
+				Namespace: "",
+				Labels: map[string]string{
+					"dep": "system",
+				},
+				Namespaces: []string{
+					"default",
+					"kube-system",
+				},
 			},
 		},
 	}
@@ -101,6 +136,13 @@ func TestParseConfig(t *testing.T) {
 				&configSampleLocation,
 			},
 			&expectedSampleAuth,
+			false,
+		}, {
+			"Labels",
+			args{
+				&configSampleLabelsLocation,
+			},
+			&expectedSampleLabelsAuth,
 			false,
 		}, {
 			"Multiples users",

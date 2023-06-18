@@ -57,10 +57,11 @@ type Authn struct {
 
 // User Identifies a user including the tenant
 type User struct {
-	Username   string   `yaml:"username"`
-	Password   string   `yaml:"password"`
-	Namespace  string   `yaml:"namespace"`
-	Namespaces []string `yaml:"namespaces"`
+	Username   string            `yaml:"username"`
+	Password   string            `yaml:"password"`
+	Namespace  string            `yaml:"namespace"`
+	Namespaces []string          `yaml:"namespaces"`
+	Labels     map[string]string `yaml:"labels"`
 }
 ```
 
@@ -104,6 +105,31 @@ users:
 
 A tenant can contain multiple users. But a user is tied to a single tenant.
 
+Tenant definition usually contains a set of labels. Starting from v1.7.0 it's possible to add these labels to a new `labels`
+section to the user definition to inject these labels on queries for that user.
+
+Example available at [configs/sample.labels.yaml](configs/sample.labels.yaml) file:
+
+```yaml
+users:
+  - username: Happy
+    password: Prometheus
+    labels:
+      app: happy
+      team: america
+  - username: Sad
+    password: Prometheus
+    labels:
+      namespace: kube-system
+  - username: bored
+    password: Prometheus
+    namespaces:
+      - default
+      - kube-system
+    labels:
+      dep: system
+```
+
 #### Configure the proxy for JWT authentication
 
 Under the hood, the proxy uses [keyfunc](https://github.com/MicahParks/keyfunc) to load
@@ -126,10 +152,19 @@ The **token** is extracted from one of two locations with the given precedence:
 For the token to be valid, it must:
 
 * contain a `kid` (key ID) in the header that matches the kid of a known key in the JWKS,
-* contain a claim in the payload called `namespaces`, with one or more values. For example:
+* contain a claim in the payload called `namespaces`, with zero or more values. For example:
   ```json
   {
     "namespaces": ["foo", "bar"]
+  }
+  ```
+* contain a claim in the payload called `labels`, with zero or more values. For example:
+  ```json
+  {
+    "labels": {
+      "app": "happy",
+      "team": "america"
+    }
   }
   ```
 * have been signed with the key in the JWKS matching the `kid` found in the JWT header.
@@ -145,6 +180,12 @@ You can now use curl, for example:
 ```bash
 curl -H "Authorization: Bearer $TOKEN" http://localhost:9092/api/v1/query\?query\=net_conntrack_dialer_conn_attempted_total
 ```
+
+#### Namespaces or labels
+
+The proxy can be configured to use either namespaces and/or labels to query Prometheus.
+At least one must be configured, otherwise the proxy will not proxy the query to Prometheus.
+*(It could lead to a security issue if the proxy is not configured to use namespaces or labels)*
 
 ## Build it
 

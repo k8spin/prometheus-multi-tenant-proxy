@@ -4,9 +4,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 
@@ -17,7 +17,8 @@ import (
 // NamespaceClaim expected structure of the JWT token payload
 type NamespaceClaim struct {
 	// Namespaces contains the list of namespaces a user has access to
-	Namespaces []string `json:"namespaces"`
+	Namespaces []string          `json:"namespaces"`
+	Labels     map[string]string `json:"labels"`
 	jwt.RegisteredClaims
 }
 
@@ -103,7 +104,7 @@ func (auth *JwtAuth) loadFromURL(url *string) bool {
 }
 
 func (auth *JwtAuth) loadFromFile(location *string) bool {
-	content, err := ioutil.ReadFile(*location)
+	content, err := os.ReadFile(*location)
 	if err != nil {
 		log.Printf("Failed to read JWKS file: %v", err)
 		return false
@@ -152,20 +153,13 @@ func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string, map[strin
 	}
 
 	claims := token.Claims.(*NamespaceClaim)
-	if len(claims.Namespaces) == 0 {
-		log.Printf("token claim is invalid: namespaces is missing or empty")
-		return false, nil, nil
+	if claims.Namespaces == nil {
+		claims.Namespaces = []string{}
 	}
-	return true, claims.Namespaces, nil
-}
-
-func isValidSigningMethod(signingMethod string) bool {
-	for _, alg := range jwt.GetAlgorithms() {
-		if signingMethod == alg {
-			return true
-		}
+	if claims.Labels == nil {
+		claims.Labels = make(map[string]string)
 	}
-	return false
+	return true, claims.Namespaces, claims.Labels
 }
 
 func extractTokens(headers *http.Header) string {
