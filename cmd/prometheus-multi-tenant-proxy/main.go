@@ -52,6 +52,11 @@ func main() {
 					Name:  "reload-interval",
 					Usage: "Interval time to reload the configuration (minutes)",
 					Value: 5,
+				}, &cli.BoolFlag{
+					Name:    "aws",
+					Value:   false,
+					Usage:   "If true, sign the request using AWS credentials",
+					EnvVars: []string{"PROM_PROXY_USE_AWS"},
 				},
 			},
 		},

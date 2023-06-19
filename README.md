@@ -23,6 +23,8 @@ Actually, [Prometheus](https://github.com/prometheus/prometheus) does not check 
 By itself, it does not provide any multi-tenant mechanism. So, if you have untrusted tenants,
 you have to ensure a tenant uses its labels and does not use any other tenants' value.
 
+The proxy also supports Amazon Managed Service for Prometheus.
+
 ### Requirements
 
 To use this project, place the proxy in front of your [Prometheus server](https://github.com/prometheus/prometheus)
@@ -181,11 +183,39 @@ You can now use curl, for example:
 curl -H "Authorization: Bearer $TOKEN" http://localhost:9092/api/v1/query\?query\=net_conntrack_dialer_conn_attempted_total
 ```
 
+#### Proxy to Amazon Managed Service for Prometheus
+
+All requests to an AWS managed prometheus service need a signature in the `Authorization` header,
+which is calculated based on the request URL, headers, and body.
+Since the proxy modifies the request on the fly, any existing signature will
+be invalidated.
+This is why prometheus-multi-tenant-proxy incorporates AWS signature v4.
+
+To enable AWS signature, use either the `--aws` flag or set the environment variable
+`PROM_PROXY_USE_AWS=true`.
+
+The credentials used for signing are taken from environment variables, such as `AWS_ACCESS_KEY` and `AWS_SECRET_KEY`
+(see [AWS credentials environment variables](
+https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials_environment.html) for a full list).
+In case your prometheus service doesn't live in the `us-east-1` region, you will also have to set
+either `AWS_REGION` or `AWS_DEFAULT_REGION` to the region's shorthand.
+Note that the AWS service is always set to `aps`, which is the shorthand for AWS Prometheus Service.
+
+For more information, see:
+
+  * [What is Amazon Managed Service for Prometheus?](
+    https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)
+  * [Signature Calculations for the Authorization Header: Transferring Payload in a Single Chunk (AWS Signature Version 4)](
+    https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-header-based-auth.html)
+  * [Using credentials from environment variables](https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_credentials_environment.html)
+
+
 #### Namespaces or labels
 
 The proxy can be configured to use either namespaces and/or labels to query Prometheus.
 At least one must be configured, otherwise the proxy will not proxy the query to Prometheus.
 *(It could lead to a security issue if the proxy is not configured to use namespaces or labels)*
+
 
 ## Build it
 
