@@ -18,6 +18,7 @@ func Serve(c *cli.Context) error {
 	authConfigLocation := c.String("auth-config")
 	reloadInterval := c.Int("reload-interval")
 	authType := c.String("auth-type")
+	awsSign := c.Bool("aws")
 
 	var auth Auth
 	if authType == "basic" {
@@ -48,8 +49,16 @@ func Serve(c *cli.Context) error {
 		prometheusServerURL: prometheusServerURL,
 	}
 
+	director := rprt.Director
+
+	if awsSign {
+		signer := NewAWSSigner()
+		director = signer.SignAfter(director)
+		log.Printf("AWS signature enabled: %v", signer)
+	}
+
 	reverseProxy := httputil.ReverseProxy{
-		Director:  rprt.Director,
+		Director:  director,
 		Transport: &rprt,
 	}
 

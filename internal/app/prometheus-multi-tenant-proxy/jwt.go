@@ -17,8 +17,9 @@ import (
 // NamespaceClaim expected structure of the JWT token payload
 type NamespaceClaim struct {
 	// Namespaces contains the list of namespaces a user has access to
-	Namespaces []string          `json:"namespaces"`
-	Labels     map[string]string `json:"labels"`
+	Namespaces []string `json:"namespaces"`
+	// Labels contains a map of labels that will be injected for the user
+	Labels map[string]string `json:"labels"`
 	jwt.RegisteredClaims
 }
 

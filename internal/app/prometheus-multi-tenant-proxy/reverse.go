@@ -22,12 +22,12 @@ func (r *ReversePrometheusRoundTripper) RoundTrip(req *http.Request) (*http.Resp
 }
 
 func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
-	if req.URL.Path == "/api/v1/query" || req.URL.Path == "/api/v1/query_range" {
+	if strings.HasSuffix(req.URL.Path, "/api/v1/query") || strings.HasSuffix(req.URL.Path, "/api/v1/query_range") {
 		if err := r.modifyRequest(req, "query"); err != nil {
 			log.Printf("[ERROR]\t%s\n", err)
 		}
 	}
-	if req.URL.Path == "/api/v1/series" {
+	if strings.HasSuffix(req.URL.Path, "/api/v1/series") {
 		if err := r.modifyRequest(req, "match[]"); err != nil {
 			log.Printf("[ERROR]\t%s\n", err)
 		}
@@ -36,6 +36,7 @@ func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
 	req.Host = r.prometheusServerURL.Host
 	req.URL.Scheme = r.prometheusServerURL.Scheme
 	req.URL.Host = r.prometheusServerURL.Host
+	req.URL.Path = r.prometheusServerURL.Path + req.URL.Path
 
 	req.Header.Set("X-Forwarded-Host", req.Host)
 	req.Header.Del("Authorization")

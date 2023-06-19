@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0
+	github.com/aws/aws-sdk-go v1.44.245
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/prometheus-community/prom-label-proxy v0.7.0
 	github.com/prometheus/prometheus v0.44.0
@@ -36,6 +37,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/grafana/regexp v0.0.0-20221122212121-6b5c0a4cb7fd // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
