@@ -7,7 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/prometheus-community/prom-label-proxy v0.7.0
 	github.com/prometheus/prometheus v0.44.0
-	github.com/urfave/cli/v2 v2.25.6
+	github.com/urfave/cli/v2 v2.25.7
 	gopkg.in/yaml.v3 v3.0.1
 )
 
