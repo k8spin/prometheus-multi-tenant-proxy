@@ -33,19 +33,27 @@ instance, configure the auth proxy configuration and run it.
 ### Run it
 
 ```bash
-$ prometheus-multi-tenant-proxy run --prometheus-endpoint http://localhost:9090 --port 9091 --auth-config ./my-auth-config.yaml --reload-interval=5 --unprotected-endpoints /-/healthy,/-/ready
+$ prometheus-multi-tenant-proxy run \
+  --prometheus-endpoint http://localhost:9090 \
+  --port 9091 \
+  --auth-config ./my-auth-config.yaml \
+  --reload-interval=5 \
+  --unprotected-endpoints /-/healthy,/-/ready
 ```
 
-Where:
+Available arguments // environment variables to the `run` command:
 
-- `--port`: Port used to expose this proxy.
-- `--prometheus-endpoint`: URL of your Prometheus instance.
-- `--reload-interval`: Interval in minutes to reload the auth config file.
-- `--unprotected-endpoints`: Comma separated list of endpoints that do not require authentication.
-- `--auth-type`: Type of authentication to use, one of `basic`,  `jwt`
-- `--auth-config`: Authentication configuration.
+- `--port` // `PROM_PROXY_PORT`: Port used to expose this proxy.
+- `--prometheus-endpoint` // `PROM_PROXY_ENDPOINT`: URL of your Prometheus instance.
+- `--reload-interval` // `PROM_PROXY_RELOAD_INTERVAL`: Interval in minutes to reload the auth config file.
+- `--unprotected-endpoints` // `PROM_PROXY_UNPROTECTED_ENDPOINTS`: Comma separated list of endpoints that do not require authentication.
+- `--auth-type` // `PROM_PROXY_AUTH_TYPE`: Type of authentication to use, one of `basic`,  `jwt`
+- `--auth-config` // `PROM_PROXY_AUTH_CONFIG`: Authentication configuration.
    * for `basic` authentication: path to a configuration file following the *Authn structure*
    * for `jwt` authentication: either a path or an URL to a json containing a *Json Web Keys Set (JWKS)*
+- `--aws` // `PROM_PROXY_USE_AWS`: See below.
+
+Use `prometheus-multi-tenant-proxy run --help` for more information.
 
 #### Configure the proxy for basic authentication
 
