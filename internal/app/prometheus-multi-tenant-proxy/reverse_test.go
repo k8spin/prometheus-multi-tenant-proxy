@@ -143,11 +143,13 @@ func TestReverse_ModifyGet(t *testing.T) {
 }
 
 func TestReverse_NoNs(t *testing.T) {
+	// A request without namespaces nor labels
+	// will end up with a query string containing an empty prometheus query.
 	tripper := ReversePrometheusRoundTripper{
 		prometheusServerURL: base,
 	}
 	path := "/api/v1/query"
-	query := "query=foo"
+	expectedQuery := "query="
 
 	// If the context contains an empty namespaces slice, the request isn't touched.
 	r := getRequest(fmt.Sprintf("%s/api/v1/query?query=foo", promURL), nil, nil)
@@ -157,8 +159,8 @@ func TestReverse_NoNs(t *testing.T) {
 		t.Errorf("Path should have been preserved: %v", r.URL.Path)
 	}
 	parsed, _ := url.QueryUnescape(r.URL.RawQuery)
-	if parsed != query {
-		t.Errorf("Query should have been preserved: %v", r.URL.RawQuery)
+	if parsed != expectedQuery {
+		t.Errorf("Query should not have been preserved: %v", r.URL.RawQuery)
 	}
 }
 
