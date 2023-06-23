@@ -44,7 +44,7 @@ $ prometheus-multi-tenant-proxy run \
 Available arguments // environment variables to the `run` command:
 
 - `--port` // `PROM_PROXY_PORT`: Port used to expose this proxy.
-- `--prometheus-endpoint` // `PROM_PROXY_ENDPOINT`: URL of your Prometheus instance.
+- `--prometheus-endpoint` // `PROM_PROXY_PROMETHEUS_ENDPOINT`: URL of your Prometheus instance.
 - `--reload-interval` // `PROM_PROXY_RELOAD_INTERVAL`: Interval in minutes to reload the auth config file.
 - `--unprotected-endpoints` // `PROM_PROXY_UNPROTECTED_ENDPOINTS`: Comma separated list of endpoints that do not require authentication.
 - `--auth-type` // `PROM_PROXY_AUTH_TYPE`: Type of authentication to use, one of `basic`,  `jwt`

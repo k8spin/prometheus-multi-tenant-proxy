@@ -38,7 +38,7 @@ func main() {
 					Name:    "prometheus-endpoint",
 					Usage:   "Prometheus server endpoint",
 					Value:   "http://localhost:9091",
-					EnvVars: []string{envPrefix + "ENDPOINT"},
+					EnvVars: []string{envPrefix + "PROMETHEUS_ENDPOINT"},
 				}, &cli.StringSliceFlag{
 					Name:    "unprotected-endpoints",
 					Usage:   "Unprotected endpoints (mostly for live/readiness probes)",
