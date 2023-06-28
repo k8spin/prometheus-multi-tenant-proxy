@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"context"
+	"log"
 	"net/http"
 )
 
@@ -22,6 +23,11 @@ func AuthHandler(auth Auth, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authorized, namespaces, labels := auth.IsAuthorized(r)
 		if !authorized {
+			auth.WriteUnauthorisedResponse(w)
+			return
+		}
+		if len(namespaces) == 0 && len(labels) == 0 {
+			log.Printf("[WARNING] No namespaces or labels found for request")
 			auth.WriteUnauthorisedResponse(w)
 			return
 		}
