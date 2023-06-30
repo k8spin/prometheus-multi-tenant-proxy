@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   prometheus-multi-tenant-proxy:
   - apiVersion: v2
+    appVersion: cce4aa20
+    created: "2023-06-30T18:36:14.674218289Z"
+    description: A Helm chart for Kubernetes
+    digest: 819aa4a2fd30e453c7b61b8b1a74f425152af2bd4fc82804510384d95702d41e
+    name: prometheus-multi-tenant-proxy
+    type: application
+    urls:
+    - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-cce4aa20.tgz
+    version: 0.0.0-cce4aa20
+  - apiVersion: v2
     appVersion: b3ab3db6
     created: "2023-06-30T12:02:55.641463986Z"
     description: A Helm chart for Kubernetes
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-b3ab3db6.tgz
     version: 0.0.0-b3ab3db6
-generated: "2023-06-30T12:02:55.639743473Z"
+generated: "2023-06-30T18:36:14.672752597Z"
