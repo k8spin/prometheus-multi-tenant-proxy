@@ -58,3 +58,10 @@ jobs:
           RELEASE_DATE=${{ env.RELEASE_DATE }}
           VERSION=${{ env.RELEASE_VERSION }}
           COMMIT=${{ github.sha }}
+    - name: Publish Unstable Helm charts
+      uses: stefanprodan/helm-gh-pages@v1.7.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        charts_dir: deployments/kubernetes/helm
+        chart_version: 0.0.0-${{ env.RELEASE_VERSION }}
+        app_version: ${{ env.RELEASE_VERSION }}
