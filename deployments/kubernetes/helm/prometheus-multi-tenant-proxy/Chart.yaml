@@ -1,0 +1,7 @@
+apiVersion: v2
+name: prometheus-multi-tenant-proxy
+description: K8Spin - Prometheus multi-tenant proxy
+type: application
+# The version is injected by the release workflow
+version: 0.0.0
+appVersion: 0.0.0

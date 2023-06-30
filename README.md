@@ -224,6 +224,74 @@ The proxy can be configured to use either namespaces and/or labels to query Prom
 At least one must be configured, otherwise the proxy will not proxy the query to Prometheus.
 *(It could lead to a security issue if the proxy is not configured to use namespaces or labels)*
 
+### Deploy on Kubernetes using Helm
+
+The proxy can be deployed on Kubernetes using Helm. The Helm chart is available at [k8spin/prometheus-multi-tenant-proxy](https://k8spin.github.io/prometheus-multi-tenant-proxy). Find the chart's documentation on its [README.md](deployments/kubernetes/helm/prometheus-multi-tenant-proxy/README.md).
+
+TL;DR:
+
+```bash
+$ helm repo add k8spin-prometheus-multi-tenant-proxy https://k8spin.github.io/prometheus-multi-tenant-proxy
+$ helm repo update
+$ helm upgrade --install prometheus-multi-tenant-proxy k8spin-prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy --set proxy.prometheusEndpoint=http://prometheus.monitoring.svc.cluster.local:9090
+```
+
+#### Example using flux
+
+```yaml
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: prometheus-multi-tenant-proxy
+  namespace: flux-system
+  labels:
+    phase: seed
+spec:
+  interval: 1m0s
+  url: https://k8spin.github.io/prometheus-multi-tenant-proxy
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prometheus-multi-tenant-proxy
+  namespace: flux-system
+spec:
+  timeout: 30m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  interval: 1m
+  chart:
+    spec:
+      chart: prometheus-multi-tenant-proxy
+      version: "1.10.0"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-multi-tenant-proxy
+        namespace: flux-system
+      interval: 1m
+  releaseName: prometheus-multi-tenant-proxy
+  targetNamespace: monitoring
+  storageNamespace: monitoring
+  valuesFrom: []
+  values:
+    proxy:
+      prometheusEndpoint: http://prometheus.monitoring.svc.cluster.local:9090
+      auth:
+        basic:
+          authn: |
+            users:
+              - username: User-a
+                password: pass-a
+                namespace: tenant-a
+              - username: User-b
+                password: pass-b
+                namespace: tenant-b
+```
 
 ## Build it
 

@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "prometheus-multi-tenant-proxy.fullname" . }}
+  labels:
+    {{- include "prometheus-multi-tenant-proxy.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "prometheus-multi-tenant-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "prometheus-multi-tenant-proxy.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "prometheus-multi-tenant-proxy.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - run
+          {{- if .Values.proxy.extraArgs }}
+            {{- toYaml .Values.proxy.extraArgs | nindent 12 }}
+          {{- end }}
+          env:
+            - name: PROM_PROXY_PROMETHEUS_ENDPOINT
+              value: {{ .Values.proxy.prometheusEndpoint | quote }}
+            - name: PROM_PROXY_PORT
+              value: {{ .Values.proxy.port | quote }}
+            - name: PROM_PROXY_AUTH_TYPE
+              value: {{ .Values.proxy.auth.type | quote }}
+            - name: PROM_PROXY_AUTH_CONFIG
+              value: {{ if eq .Values.proxy.auth.type "basic" }}"/etc/prometheus-multi-tenant-proxy/authn.yaml"{{ else }}{{ .Values.proxy.auth.jwt.url | quote }}{{ end }}
+          {{- if .Values.proxy.extraEnv }}
+            {{- toYaml .Values.proxy.extraEnv | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.proxy.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{- if eq .Values.proxy.auth.type "basic" }}
+          volumeMounts:
+            - name: authn
+              mountPath: /etc/prometheus-multi-tenant-proxy/authn.yaml
+              subPath: authn.yaml
+      volumes:
+        - name: authn
+          secret:
+            secretName: {{ if .Values.proxy.auth.basic.createSecret }}{{ include "prometheus-multi-tenant-proxy.fullname" . }}{{ else }}{{ .Values.proxy.auth.basic.secretName }}{{ end }}
+            items:
+              - key: authn.yaml
+                path: authn.yaml
+{{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
