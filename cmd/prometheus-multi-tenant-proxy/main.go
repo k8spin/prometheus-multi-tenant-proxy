@@ -44,6 +44,11 @@ func main() {
 					Usage:   "Unprotected endpoints (mostly for live/readiness probes)",
 					Value:   cli.NewStringSlice("/-/healthy", "/-/ready"),
 					EnvVars: []string{envPrefix + "UNPROTECTED_ENDPOINTS"},
+				}, &cli.StringSliceFlag{
+					Name:    "protected-endpoints",
+					Usage:   "Protected endpoints (only accessible after authentication). Use an empty string to allow all.",
+					Value:   cli.NewStringSlice("/api/v1/series", "/api/v1/query", "/api/v1/query_range"),
+					EnvVars: []string{envPrefix + "PROTECTED_ENDPOINTS"},
 				}, &cli.StringFlag{
 					Name:    "auth-type",
 					Usage:   "Auth mechanism: one of 'basic' or 'jwt'",
