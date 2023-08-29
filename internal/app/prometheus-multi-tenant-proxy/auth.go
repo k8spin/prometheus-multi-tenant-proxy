@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type key int
@@ -19,8 +20,13 @@ type Auth interface {
 }
 
 // AuthHandler returns au authentication middleware handler
-func AuthHandler(auth Auth, handler http.HandlerFunc) http.HandlerFunc {
+func AuthHandler(auth Auth, whitelist []string, handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if whitelist != nil && !isInWhitelist(r.URL.Path, whitelist) {
+			auth.WriteUnauthorisedResponse(w)
+			return
+		}
+
 		authorized, namespaces, labels := auth.IsAuthorized(r)
 		if !authorized {
 			auth.WriteUnauthorisedResponse(w)
@@ -35,4 +41,12 @@ func AuthHandler(auth Auth, handler http.HandlerFunc) http.HandlerFunc {
 		ctx = context.WithValue(ctx, Labels, labels)
 		handler(w, r.WithContext(ctx))
 	}
+}
+
+func isInWhitelist(requestPath string, whitelist []string) bool {
+	allowed := false
+	for _, endpoint := range whitelist {
+		allowed = allowed || strings.HasSuffix(requestPath, endpoint)
+	}
+	return allowed
 }

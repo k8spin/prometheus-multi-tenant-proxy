@@ -17,11 +17,14 @@ The proxy enforces the `namespace` label in a given PromQL query while providing
 
 ## What is it?
 
-It is a simple golang proxy. It does basic auth, logs the requests, and serves as a Prometheus reverse proxy.
+It is a simple golang proxy. It does basic or JWT auth, logs the requests, and serves as a Prometheus reverse proxy.
 
 Actually, [Prometheus](https://github.com/prometheus/prometheus) does not check the auth of any request.
 By itself, it does not provide any multi-tenant mechanism. So, if you have untrusted tenants,
 you have to ensure a tenant uses its labels and does not use any other tenants' value.
+
+For more security, only specific endpoints are proxied by default: `/api/v1/series`, `/api/v1/query`,
+and `/api/v1/query_range` (see `--protected-endpoints`).
 
 The proxy also supports Amazon Managed Service for Prometheus.
 
@@ -47,6 +50,8 @@ Available arguments // environment variables to the `run` command:
 - `--prometheus-endpoint` // `PROM_PROXY_PROMETHEUS_ENDPOINT`: URL of your Prometheus instance.
 - `--reload-interval` // `PROM_PROXY_RELOAD_INTERVAL`: Interval in minutes to reload the auth config file.
 - `--unprotected-endpoints` // `PROM_PROXY_UNPROTECTED_ENDPOINTS`: Comma separated list of endpoints that do not require authentication.
+- `--protected-endpoints` // `PROM_PROXY_PROTECTED_ENDPOINTS`: Comma separated list of endpoints that are allowed after authentication.
+   Pass an empty string to turn it off (i.e. to allow all endpoints).
 - `--auth-type` // `PROM_PROXY_AUTH_TYPE`: Type of authentication to use, one of `basic`,  `jwt`
 - `--auth-config` // `PROM_PROXY_AUTH_CONFIG`: Authentication configuration.
    * for `basic` authentication: path to a configuration file following the *Authn structure*

@@ -67,7 +67,16 @@ func Serve(c *cli.Context) error {
 		http.HandleFunc(selected, LogRequest(reverseProxy.ServeHTTP))
 	}
 
-	http.HandleFunc("/", LogRequest(AuthHandler(auth, reverseProxy.ServeHTTP)))
+	whitelist := c.StringSlice("protected-endpoints")
+	if len(whitelist) == 1 && whitelist[0] == "" {
+		// turn off protection if --protected-endpoints "" is used
+		whitelist = nil
+		log.Printf("[WARNING] Allowing all endpoints! This is highly insecure.")
+	} else {
+		log.Printf("Allowed protected endpoints: %v", whitelist)
+	}
+
+	http.HandleFunc("/", LogRequest(AuthHandler(auth, whitelist, reverseProxy.ServeHTTP)))
 	if err := http.ListenAndServe(serveAt, nil); err != nil {
 		log.Fatalf("Prometheus multi tenant proxy can not start %v", err)
 		return err

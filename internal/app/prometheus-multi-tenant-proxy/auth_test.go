@@ -42,7 +42,7 @@ func TestAuth_Ctx(t *testing.T) {
 		r = req
 	}
 
-	AuthHandler(auth, h)(w, r)
+	AuthHandler(auth, nil, h)(w, r)
 	if auth.wasDenied {
 		t.Errorf("Auth should be successful")
 	}
@@ -51,6 +51,39 @@ func TestAuth_Ctx(t *testing.T) {
 	}
 	if !reflect.DeepEqual(labels, r.Context().Value(Labels).(map[string]string)) {
 		t.Errorf("Labels should be set")
+	}
+}
+
+func TestAuth_Whitelist(t *testing.T) {
+	auth := &testAuth{
+		authorized: true,
+		namespaces: []string{"ns"},
+		labels:     map[string]string{},
+	}
+	r := httptest.NewRequest("GET", "http://example.com/foo", nil)
+	h := func(w http.ResponseWriter, req *http.Request) {}
+
+	testCases := []struct {
+		whitelist []string
+		ok        bool
+	}{
+		{nil, true},
+		{[]string{}, false},
+		{[]string{"/foo"}, true},
+		{[]string{"/bar"}, false},
+		{[]string{"/bar/foo"}, false},
+		{[]string{"/foo/bar"}, false},
+		{[]string{"/bar", "/buzz", "/foo"}, true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("%v", tc.whitelist), func(t *testing.T) {
+			auth.wasDenied = false // reset
+			AuthHandler(auth, tc.whitelist, h)(httptest.NewRecorder(), r)
+			if auth.wasDenied == tc.ok {
+				t.Errorf("Whitelist %v should return ok=%v", tc.whitelist, tc.ok)
+			}
+		})
 	}
 }
 
@@ -92,12 +125,43 @@ func TestAuth_AuthHandler(t *testing.T) {
 			r := httptest.NewRequest("GET", "http://example.com", nil)
 			w := httptest.NewRecorder()
 
-			AuthHandler(auth, handler)(w, r)
+			AuthHandler(auth, nil, handler)(w, r)
 			if tc.ok != handlerCalled {
 				t.Errorf("handler called: %v should have been %v", handlerCalled, tc.ok)
 			}
 			if tc.ok == auth.wasDenied {
 				t.Errorf("denied: %v should have been %v", handlerCalled, tc.ok)
+			}
+		})
+	}
+}
+
+func TestAuth_isInWhitelist(t *testing.T) {
+	whitelist := []string{
+		"/api/v1/query",
+		"/foo",
+	}
+
+	testCases := []struct {
+		path     string
+		expected bool
+	}{
+		{"", false},
+		{"/foo", true},
+		{"/bar/foo", true},
+		{"/foo/bar", false},
+		{"/api/v1/query", true},
+		{"/v1/query", false},
+		{"/api/v2/query", false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.path, func(t *testing.T) {
+			if isInWhitelist("https://example.com"+tc.path, whitelist) != tc.expected {
+				t.Errorf("%s != %v", tc.path, tc.expected)
+			}
+			if isInWhitelist("https://example.com/some-path"+tc.path, whitelist) != tc.expected {
+				t.Errorf("%s != %v", tc.path, tc.expected)
 			}
 		})
 	}
