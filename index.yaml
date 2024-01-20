@@ -271,4 +271,14 @@ entries:
     urls:
     - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-0da700a6.tgz
     version: 0.0.0-0da700a6
-generated: "2024-01-20T09:26:36.051157919Z"
+  - apiVersion: v2
+    appVersion: 069e1866
+    created: "2024-01-20T09:27:22.427321657Z"
+    description: K8Spin - Prometheus multi-tenant proxy
+    digest: c4dbf44205207bf4fc253c5a8baec188c52c9de96c335a78950b44c0cabf2182
+    name: prometheus-multi-tenant-proxy
+    type: application
+    urls:
+    - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-069e1866.tgz
+    version: 0.0.0-069e1866
+generated: "2024-01-20T09:27:22.426681143Z"
