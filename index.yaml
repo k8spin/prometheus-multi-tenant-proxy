@@ -102,6 +102,16 @@ entries:
     - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-cce4aa20.tgz
     version: 0.0.0-cce4aa20
   - apiVersion: v2
+    appVersion: bb22f8ac
+    created: "2024-01-20T09:27:24.299500764Z"
+    description: K8Spin - Prometheus multi-tenant proxy
+    digest: c9de89d2f6a275c5449e086b7b105f0041f75e246effb6a834f2876c5248d298
+    name: prometheus-multi-tenant-proxy
+    type: application
+    urls:
+    - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-bb22f8ac.tgz
+    version: 0.0.0-bb22f8ac
+  - apiVersion: v2
     appVersion: b3ab3db6
     created: "2023-06-30T12:02:55.641463986Z"
     description: A Helm chart for Kubernetes
@@ -281,4 +291,4 @@ entries:
     urls:
     - https://k8spin.github.io/prometheus-multi-tenant-proxy/prometheus-multi-tenant-proxy-0.0.0-069e1866.tgz
     version: 0.0.0-069e1866
-generated: "2024-01-20T09:27:22.426681143Z"
+generated: "2024-01-20T09:27:24.298879461Z"
