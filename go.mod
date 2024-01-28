@@ -6,7 +6,7 @@ require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0
 	github.com/aws/aws-sdk-go v1.51.2
 	github.com/golang-jwt/jwt/v5 v5.2.0
-	github.com/prometheus-community/prom-label-proxy v0.8.0
+	github.com/prometheus-community/prom-label-proxy v0.8.1
 	github.com/prometheus/prometheus v0.48.1
 	github.com/urfave/cli/v2 v2.27.1
 	gopkg.in/yaml.v3 v3.0.1
