@@ -8,7 +8,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/prometheus-community/prom-label-proxy v0.8.1
 	github.com/prometheus/prometheus v0.48.1
-	github.com/urfave/cli/v2 v2.27.1
+	github.com/urfave/cli/v2 v2.27.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -16,7 +16,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dennwc/varint v1.0.0 // indirect
 	github.com/efficientgo/core v1.0.0-rc.2 // indirect
@@ -56,7 +56,7 @@ require (
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
-	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	github.com/xrash/smetrics v0.0.0-20240312152122-5f08fbb34913 // indirect
 	go.mongodb.org/mongo-driver v1.13.1 // indirect
 	go.opentelemetry.io/otel v1.19.0 // indirect
 	go.opentelemetry.io/otel/metric v1.19.0 // indirect
