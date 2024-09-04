@@ -2,16 +2,21 @@ users:
   - username: Happy
     password: Prometheus
     labels:
-      app: happy
+      app:
+        - happy
+        - sad
       team: america
   - username: Sad
     password: Prometheus
     labels:
-      namespace: kube-system
+      namespace:
+        - kube-system
+        - monitoring
   - username: bored
     password: Prometheus
     namespaces:
       - default
       - kube-system
     labels:
-      dep: system
+      dep:
+        - system

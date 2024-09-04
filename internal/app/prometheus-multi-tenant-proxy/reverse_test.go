@@ -20,14 +20,14 @@ func ctx(namespaces []string, labels map[string]string) context.Context {
 		namespaces = []string{}
 	}
 	if labels == nil {
-		labels = map[string]string{}
+		labels = map[string][]string{}
 	}
 	c := context.WithValue(context.TODO(), Namespaces, namespaces)
 	c = context.WithValue(c, Labels, labels)
 	return c
 }
 
-func getRequest(url string, namespaces []string, labels map[string]string) *http.Request {
+func getRequest(url string, namespaces []string, labels map[string][]string) *http.Request {
 	r, _ := http.NewRequest(http.MethodGet, url, nil)
 	return r.WithContext(ctx(namespaces, labels))
 }
@@ -42,7 +42,7 @@ func ns2qs(ns []string) string {
 	return fmt.Sprintf("namespace=~\"%s\"", strings.Join(ns, "|"))
 }
 
-func labels2qs(labels map[string]string) string {
+func labels2qs(labels map[string][]string) string {
 	if len(labels) == 0 {
 		return ""
 	}
@@ -102,7 +102,7 @@ func TestReverse_ModifyGet(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(strings.Split(tc.query, "?")[0], func(t *testing.T) {
 			// test labels injection
-			for _, labels := range []map[string]string{{"foo": "true"}, {"bar": "one", "buzz": "two"}} {
+			for _, labels := range []map[string][]string{{"foo": {"true"}}, {"bar": {"one"}, "buzz": {"two"}}} {
 				r := getRequest(fmt.Sprintf("%s/api/v1/%s", promURL, tc.query), nil, labels)
 				tripper.Director(r)
 
@@ -127,7 +127,7 @@ func TestReverse_ModifyGet(t *testing.T) {
 			}
 			// test both
 			ns := []string{"some-ns"}
-			labels := map[string]string{"some": "label"}
+			labels := map[string]string[]{"some": "label"}
 			r := getRequest(fmt.Sprintf("%s/api/v1/%s", promURL, tc.query), ns, labels)
 			tripper.Director(r)
 

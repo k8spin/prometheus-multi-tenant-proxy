@@ -11,11 +11,11 @@ import (
 type testAuth struct {
 	authorized bool
 	namespaces []string
-	labels     map[string]string
+	labels     map[string][]string
 	wasDenied  bool
 }
 
-func (a *testAuth) IsAuthorized(r *http.Request) (bool, []string, map[string]string) {
+func (a *testAuth) IsAuthorized(r *http.Request) (bool, []string, map[string][]string) {
 	return a.authorized, a.namespaces, a.labels
 }
 
@@ -29,7 +29,7 @@ func (a *testAuth) Load() bool {
 
 func TestAuth_Ctx(t *testing.T) {
 	ns := []string{"ns1", "ns2"}
-	labels := map[string]string{"label1": "value1", "label2": "value2"}
+	labels := map[string][]string{"label1": ["value1"], "label2": ["value2"]}
 	auth := &testAuth{
 		authorized: true,
 		namespaces: ns,
@@ -49,7 +49,7 @@ func TestAuth_Ctx(t *testing.T) {
 	if !reflect.DeepEqual(ns, r.Context().Value(Namespaces).([]string)) {
 		t.Errorf("Namespaces should be set")
 	}
-	if !reflect.DeepEqual(labels, r.Context().Value(Labels).(map[string]string)) {
+	if !reflect.DeepEqual(labels, r.Context().Value(Labels).(map[string][]string)) {
 		t.Errorf("Labels should be set")
 	}
 }
@@ -58,7 +58,7 @@ func TestAuth_Whitelist(t *testing.T) {
 	auth := &testAuth{
 		authorized: true,
 		namespaces: []string{"ns"},
-		labels:     map[string]string{},
+		labels:     map[string][]string{},
 	}
 	r := httptest.NewRequest("GET", "http://example.com/foo", nil)
 	h := func(w http.ResponseWriter, req *http.Request) {}

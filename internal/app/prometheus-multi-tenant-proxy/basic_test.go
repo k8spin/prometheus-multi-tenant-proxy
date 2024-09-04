@@ -39,7 +39,7 @@ func TestBasic_isAuthorized(t *testing.T) {
 		args  args
 		want  bool
 		want1 []string
-		want2 map[string]string
+		want2 map[string][]string
 	}{
 		{
 			"Valid User",
