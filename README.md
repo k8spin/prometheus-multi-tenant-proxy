@@ -72,11 +72,11 @@ type Authn struct {
 
 // User Identifies a user including the tenant
 type User struct {
-	Username   string            `yaml:"username"`
-	Password   string            `yaml:"password"`
-	Namespace  string            `yaml:"namespace"`
-	Namespaces []string          `yaml:"namespaces"`
-	Labels     map[string]string `yaml:"labels"`
+	Username   string              `yaml:"username"`
+	Password   string              `yaml:"password"`
+	Namespace  string              `yaml:"namespace"`
+	Namespaces []string            `yaml:"namespaces"`
+	Labels     map[string][]string `yaml:"labels"`
 }
 ```
 
@@ -130,19 +130,25 @@ users:
   - username: Happy
     password: Prometheus
     labels:
-      app: happy
-      team: america
+      app:
+        - happy
+        - sad
+      team:
+        - america
   - username: Sad
     password: Prometheus
     labels:
-      namespace: kube-system
+      namespace:
+        - kube-system
+        - monitoring
   - username: bored
     password: Prometheus
     namespaces:
       - default
       - kube-system
     labels:
-      dep: system
+      dep:
+        - system
 ```
 
 #### Configure the proxy for JWT authentication
@@ -177,8 +183,8 @@ For the token to be valid, it must:
   ```json
   {
     "labels": {
-      "app": "happy",
-      "team": "america"
+      "app": ["happy", "sad"],
+      "team": ["america"]
     }
   }
   ```

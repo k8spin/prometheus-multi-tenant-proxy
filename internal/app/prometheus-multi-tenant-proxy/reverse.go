@@ -46,16 +46,17 @@ func (r *ReversePrometheusRoundTripper) Director(req *http.Request) {
 func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometheusFormParameter string) error {
 
 	namespaces := req.Context().Value(Namespaces).([]string)
-	l := req.Context().Value(Labels).(map[string]string)
+	l := req.Context().Value(Labels).(map[string][]string)
 
 	// Convert the labels map into a slice of label matchers.
 	var labelMatchers []*labels.Matcher
 
 	for k, v := range l {
+		combinedValue := strings.Join(v, "|")
 		labelMatchers = append(labelMatchers, &labels.Matcher{
 			Name:  k,
-			Type:  labels.MatchEqual,
-			Value: v,
+			Type:  labels.MatchRegexp,
+			Value: combinedValue,
 		})
 	}
 

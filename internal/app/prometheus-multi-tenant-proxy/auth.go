@@ -12,7 +12,7 @@ type key int
 // Auth implements an authentication middleware
 type Auth interface {
 	// IsAuthorized authenticates a request and returns the list of namespaces the user has access to
-	IsAuthorized(r *http.Request) (bool, []string, map[string]string)
+	IsAuthorized(r *http.Request) (bool, []string, map[string][]string)
 	// WriteUnauthorisedResponse writes an HTTP response in case the user is forbidden
 	WriteUnauthorisedResponse(w http.ResponseWriter)
 	// Load loads or reloads the configuration

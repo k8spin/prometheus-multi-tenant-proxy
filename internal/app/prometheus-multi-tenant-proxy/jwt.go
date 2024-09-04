@@ -19,7 +19,7 @@ type NamespaceClaim struct {
 	// Namespaces contains the list of namespaces a user has access to
 	Namespaces []string `json:"namespaces"`
 	// Labels contains a map of labels that will be injected for the user
-	Labels map[string]string `json:"labels"`
+	Labels map[string][]string `json:"labels"`
 	jwt.RegisteredClaims
 }
 
@@ -131,7 +131,7 @@ func (auth *JwtAuth) loadFromFile(location *string) bool {
 
 // IsAuthorized validates the user by verifying the JWT token in
 // the request and returning the namespaces claim found in token the payload.
-func (auth *JwtAuth) IsAuthorized(r *http.Request) (bool, []string, map[string]string) {
+func (auth *JwtAuth) IsAuthorized(r *http.Request) (bool, []string, map[string][]string) {
 	tokenString := extractTokens(&r.Header)
 	if tokenString == "" {
 		log.Printf("Token is missing from header request")
@@ -146,7 +146,7 @@ func (auth *JwtAuth) WriteUnauthorisedResponse(w http.ResponseWriter) {
 	w.Write([]byte("Unauthorised\n"))
 }
 
-func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string, map[string]string) {
+func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string, map[string][]string) {
 	token, err := jwt.ParseWithClaims(tokenString, &NamespaceClaim{}, auth.jwks.Keyfunc)
 	if err != nil || !token.Valid {
 		log.Printf("%s\n", err)
@@ -158,7 +158,7 @@ func (auth *JwtAuth) isAuthorized(tokenString string) (bool, []string, map[strin
 		claims.Namespaces = []string{}
 	}
 	if claims.Labels == nil {
-		claims.Labels = make(map[string]string)
+		claims.Labels = make(map[string][]string)
 	}
 	return true, claims.Namespaces, claims.Labels
 }

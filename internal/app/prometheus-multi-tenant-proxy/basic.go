@@ -62,7 +62,7 @@ func (auth *BasicAuth) Load() bool {
 
 // IsAuthorized uses the basic authentication and the Authn file to authenticate a user
 // and return the namespace he has access to
-func (auth *BasicAuth) IsAuthorized(r *http.Request) (bool, []string, map[string]string) {
+func (auth *BasicAuth) IsAuthorized(r *http.Request) (bool, []string, map[string][]string) {
 	user, pass, ok := r.BasicAuth()
 	if !ok {
 		return false, nil, nil
@@ -70,7 +70,7 @@ func (auth *BasicAuth) IsAuthorized(r *http.Request) (bool, []string, map[string
 	return auth.isAuthorized(user, pass)
 }
 
-func (auth *BasicAuth) isAuthorized(user, pass string) (bool, []string, map[string]string) {
+func (auth *BasicAuth) isAuthorized(user, pass string) (bool, []string, map[string][]string) {
 	authConfig := auth.getConfig()
 	for _, v := range authConfig.Users {
 		if subtle.ConstantTimeCompare([]byte(user), []byte(v.Username)) == 1 && subtle.ConstantTimeCompare([]byte(pass), []byte(v.Password)) == 1 {

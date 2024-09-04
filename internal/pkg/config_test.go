@@ -19,13 +19,13 @@ func TestParseConfig(t *testing.T) {
 				Username:   "Happy",
 				Password:   "Prometheus",
 				Namespace:  "default",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			}, {
 				Username:   "Sad",
 				Password:   "Prometheus",
 				Namespace:  "kube-system",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			},
 		},
@@ -36,25 +36,25 @@ func TestParseConfig(t *testing.T) {
 				Username:  "Happy",
 				Password:  "Prometheus",
 				Namespace: "",
-				Labels: map[string]string{
-					"app":  "happy",
-					"team": "america",
+				Labels: map[string][]string{
+					"app":  ["happy"],
+					"team": ["america"],
 				},
 				Namespaces: []string{},
 			}, {
 				Username:  "Sad",
 				Password:  "Prometheus",
 				Namespace: "",
-				Labels: map[string]string{
-					"namespace": "kube-system",
+				Labels: map[string][]string{
+					"namespace": ["kube-system"],
 				},
 				Namespaces: []string{},
 			}, {
 				Username:  "bored",
 				Password:  "Prometheus",
 				Namespace: "",
-				Labels: map[string]string{
-					"dep": "system",
+				Labels: map[string][]string{
+					"dep": ["system"],
 				},
 				Namespaces: []string{
 					"default",
@@ -69,14 +69,14 @@ func TestParseConfig(t *testing.T) {
 				Username:   "User-a",
 				Password:   "pass-a",
 				Namespace:  "tenant-a",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			},
 			{
 				Username:   "User-b",
 				Password:   "pass-b",
 				Namespace:  "tenant-b",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			},
 		},
@@ -87,21 +87,21 @@ func TestParseConfig(t *testing.T) {
 				Username:   "Happy",
 				Password:   "Prometheus",
 				Namespace:  "default",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			},
 			{
 				Username:   "Sad",
 				Password:   "Prometheus",
 				Namespace:  "kube-system",
-				Labels:     map[string]string{},
+				Labels:     map[string][]string{},
 				Namespaces: []string{},
 			},
 			{
 				Username:  "Multiple",
 				Password:  "Namespaces",
 				Namespace: "monitoring",
-				Labels:    map[string]string{},
+				Labels:    map[string][]string{},
 				Namespaces: []string{
 					"default",
 					"kube-system",
@@ -112,7 +112,7 @@ func TestParseConfig(t *testing.T) {
 				Username:  "Multiple",
 				Password:  "NamespacesWithoutNamespace",
 				Namespace: "",
-				Labels:    map[string]string{},
+				Labels:    map[string][]string{},
 				Namespaces: []string{
 					"default",
 					"kube-system",

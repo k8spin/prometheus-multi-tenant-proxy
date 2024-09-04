@@ -34,9 +34,9 @@ const (
 	validRsaToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VzIjpbInByb21ldGhldXMiLCJhcHAtMSJdfQ.n_hy5yqjFkpD00VNGCLkRyeOBdcjeu9Yp1TVzV5jSKaX32Idrl2jv1mHCX5JJfM-tyLXxCQJcze9q7IXpN0_x-E7iE_uAvDT7BiMWSwy7lWW2eRuffggv2EG8HP3_kGgsH-RcP4B5VbaKeB9N1RNrHwvxoiYKhcFQCTJzsf010s10nUYmfL0jQ8hW--yTX2kly8zXxBoJXu6rluNMXWL7o8Tx9ONHLLlz-trP7s9xFN_GQtbZ3lKZ5n8XESccctXWAdIqtYtlTA4KCr0krIX7cRbLdni5QOPBTwQxdOBujdDaXZqo8K8PJfaZ93oyJUdYe7rnX0Lz_dT1EJLWYvm-A"
 	// kid = "rs256-key", payload = {"namespaces": []}}
 	validEmptyNamespacesRSAToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VzIjpbXX0.LWPlxmZPDaKA3Z-IbRAoBYuymCx3cdZvXHzlSfVIhj4TjoQZ8Rom5IWtJpoEiq-_DkQHFgFRnLTsFE8CcaYM_eLWRZPK7c_rDwzfJDxDVhIL3k6krL5gq_4Y6nOGnjktJkIJvJstl9FDc7gyx0EBvUX-cgQzh-my9whMXBrZ0oybVyiBGlAZbVOiW-BObm3U0hYF4Xt6HOTm4khAEsZPnS4rglQpQki_q4w67OaMcTwfO_hr6KJtwzavLLCWJhijWdON93ueubn4Z294TM5SWQFzPM-knFDaBfzq5k94NQviBoT7ekb9RsGLrjKsrVOdOVMM8b4BEFXMtZpVENLgQg"
-	// kid = "rs256-key", payload = {"labels": {"app":"ecom","team":"europe"}}}
+	// kid = "rs256-key", payload = {"labels": {"app":["ecom"],"team":["europe"]}}}
 	validTwoLabelsRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjoiZWNvbSIsInRlYW0iOiJldXJvcGUifX0.Xb9-WPdP-yL7afsYShGQt1p3YVhNcufY-6dxtCVnbhgKLotqgy81tS-5RxF7KdSlSkfuwNyZCuE_qnKO_seOxczHOkARWnvZ5jlfPoPI8adKiVykeDR6q6fj3fO5Mp7BDNVXBwb9_wQ08Y3JwONdoNmvdnUz6aspD7IVIL41t64kst-GTxvvkdA-1Xfh9LB0zmyaCEgYiaByNJevtqnwFociTzRbWR2yXcEkhzbqKSGG6ia55It5CeN3GB9sjAWOEd57fSgDJwr0D80zxFoXtLeX64gcCjNsxJsh5ZrQ8U34fdo-73mPDJPCOBkowiamPDWOkBQ54U5lesbE5R3KPA"
-	// kid = "rs256-key", payload = {"labels":{"app":"ecom","team":"europe"},"namespaces":["kube-system","monitoring"]}
+	// kid = "rs256-key", payload = {"labels":{"app":["ecom"],"team":["europe"]},"namespaces":["kube-system","monitoring"]}
 	validTwoLabelsTwoNamespacesRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjoiZWNvbSIsInRlYW0iOiJldXJvcGUifSwibmFtZXNwYWNlcyI6WyJrdWJlLXN5c3RlbSIsIm1vbml0b3JpbmciXX0.Zk6hE9OBUIH5ctMzSeq2p40dJFiwZS_TghePWlTB1_-XHOzZRGvbT-sXoZnIy1__lHJZ4h8t0-P0_zwQPpZ2aB2A0Ar3wogEiIdktoRtqQcMvSjjIjwNm8e9uaE1QBpeqNtxg5i3hDMJLVfsoXta0PJ9YW4hbuhnpaThhji9M7duOXv9eeW4nJHSFr3YVCn75qR35O8z3Pwjo_06OhSpK5sy1PbqQLNvzkWdKYiqAjezWnnh6kO37hQfDJWUaKxkhE4TmOMJRk_mRKrUpHZ1mQ6rZ4YXyo0pBBNqJ5uJYA45bT2FJpNqJ9rXHf2qjDBwcS6SEw8pDe-iRdIC0xr1Ig"
 )
 
@@ -131,13 +131,13 @@ func TestJWT_IsAuthorized(t *testing.T) {
 		desc  string
 		token string
 		ns    []string
-		l     map[string]string
+		l     map[string][]string
 	}{
 		{"hmac", validHmacToken, []string{"prometheus"}, map[string]string{}},
 		{"rsa", validRsaToken, []string{"prometheus", "app-1"}, map[string]string{}},
 		{"empty-namespace-rsa", validEmptyNamespacesRSAToken, []string{}, map[string]string{}},
-		{"two-labels-rsa", validTwoLabelsRSAToken, []string{}, map[string]string{"app": "ecom", "team": "europe"}},
-		{"two-labels-two-namespaces-rsa", validTwoLabelsTwoNamespacesRSAToken, []string{"kube-system", "monitoring"}, map[string]string{"app": "ecom", "team": "europe"}},
+		{"two-labels-rsa", validTwoLabelsRSAToken, []string{}, map[string][]string{"app": {"ecom"}, "team": {"europe"}}},
+		{"two-labels-two-namespaces-rsa", validTwoLabelsTwoNamespacesRSAToken, []string{"kube-system", "monitoring"}, map[string][]string{"app": {"ecom"}, "team": {"europe"}}},
 	}
 
 	for _, tc := range validTestCases {
