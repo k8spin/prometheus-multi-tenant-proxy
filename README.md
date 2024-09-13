@@ -235,6 +235,27 @@ The proxy can be configured to use either namespaces and/or labels to query Prom
 At least one must be configured, otherwise the proxy will not proxy the query to Prometheus.
 *(It could lead to a security issue if the proxy is not configured to use namespaces or labels)*
 
+### Breaking Change in [v1.12.0]: Update map[string]string to map[string][]string for the labels map values
+
+What Changed: Previously, the map only allowed a single string value per key:
+
+```
+// Old implementation (prior to version 1.12.0)
+labels:
+   app: happy
+   team: america
+```
+Now, the map allows each key to store a slice of strings (multiple values):
+
+```
+// New implementation (starting from version 1.12.0)
+labels:
+   app:
+     - happy
+     - sad
+   team:
+     - america
+```
 ### Deploy on Kubernetes using Helm
 
 The proxy can be deployed on Kubernetes using Helm. The Helm chart is available at [k8spin/prometheus-multi-tenant-proxy](https://k8spin.github.io/prometheus-multi-tenant-proxy). Find the chart's documentation on its [README.md](deployments/kubernetes/helm/prometheus-multi-tenant-proxy/README.md).
