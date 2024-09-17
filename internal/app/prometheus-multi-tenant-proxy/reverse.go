@@ -76,7 +76,7 @@ func (r *ReversePrometheusRoundTripper) modifyRequest(req *http.Request, prometh
 		})
 	}
 
-	e := injector.NewEnforcer(false, labelMatchers...)
+	e := injector.NewPromQLEnforcer(false, labelMatchers...)
 
 	if err := req.ParseForm(); err != nil {
 		return err
