@@ -29,7 +29,7 @@ func (a *testAuth) Load() bool {
 
 func TestAuth_Ctx(t *testing.T) {
 	ns := []string{"ns1", "ns2"}
-	labels := map[string][]string{"label1": ["value1"], "label2": ["value2"]}
+	labels := map[string][]string{"label1": []string{"value1"}, "label2": []string{"value2"}}
 	auth := &testAuth{
 		authorized: true,
 		namespaces: ns,
@@ -89,14 +89,14 @@ func TestAuth_Whitelist(t *testing.T) {
 
 func TestAuth_AuthHandler(t *testing.T) {
 	ns := []string{"ns1"}
-	ls := map[string]string{"foo": "bar"}
+	ls := map[string][]string{"foo": []string{"bar"}}
 	noNs := []string{}
-	noLs := map[string]string{}
+	noLs := map[string][]string{}
 
 	testCases := []struct {
 		authorized bool
 		ns         []string
-		ls         map[string]string
+		ls         map[string][]string
 		ok         bool
 	}{
 		{true, ns, ls, true},

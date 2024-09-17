@@ -15,7 +15,7 @@ var (
 	base, _ = url.Parse(promURL)
 )
 
-func ctx(namespaces []string, labels map[string]string) context.Context {
+func ctx(namespaces []string, labels map[string][]string) context.Context {
 	if namespaces == nil {
 		namespaces = []string{}
 	}
@@ -48,7 +48,8 @@ func labels2qs(labels map[string][]string) string {
 	}
 	matchers := make([]string, 0, len(labels))
 	for k, v := range labels {
-		matchers = append(matchers, fmt.Sprintf("%s=\"%s\"", k, v))
+		// join the v with "|"
+		matchers = append(matchers, fmt.Sprintf("%s=~\"%s\"", k, strings.Join(v, "|")))
 	}
 	sort.Strings(matchers)
 	return strings.Join(matchers, ",")
@@ -127,7 +128,7 @@ func TestReverse_ModifyGet(t *testing.T) {
 			}
 			// test both
 			ns := []string{"some-ns"}
-			labels := map[string]string[]{"some": "label"}
+			labels := map[string][]string{"some": {"label"}}
 			r := getRequest(fmt.Sprintf("%s/api/v1/%s", promURL, tc.query), ns, labels)
 			tripper.Director(r)
 

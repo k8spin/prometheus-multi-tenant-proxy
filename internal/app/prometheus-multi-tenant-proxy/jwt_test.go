@@ -35,9 +35,9 @@ const (
 	// kid = "rs256-key", payload = {"namespaces": []}}
 	validEmptyNamespacesRSAToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSIsInR5cCI6IkpXVCJ9.eyJuYW1lc3BhY2VzIjpbXX0.LWPlxmZPDaKA3Z-IbRAoBYuymCx3cdZvXHzlSfVIhj4TjoQZ8Rom5IWtJpoEiq-_DkQHFgFRnLTsFE8CcaYM_eLWRZPK7c_rDwzfJDxDVhIL3k6krL5gq_4Y6nOGnjktJkIJvJstl9FDc7gyx0EBvUX-cgQzh-my9whMXBrZ0oybVyiBGlAZbVOiW-BObm3U0hYF4Xt6HOTm4khAEsZPnS4rglQpQki_q4w67OaMcTwfO_hr6KJtwzavLLCWJhijWdON93ueubn4Z294TM5SWQFzPM-knFDaBfzq5k94NQviBoT7ekb9RsGLrjKsrVOdOVMM8b4BEFXMtZpVENLgQg"
 	// kid = "rs256-key", payload = {"labels": {"app":["ecom"],"team":["europe"]}}}
-	validTwoLabelsRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjoiZWNvbSIsInRlYW0iOiJldXJvcGUifX0.Xb9-WPdP-yL7afsYShGQt1p3YVhNcufY-6dxtCVnbhgKLotqgy81tS-5RxF7KdSlSkfuwNyZCuE_qnKO_seOxczHOkARWnvZ5jlfPoPI8adKiVykeDR6q6fj3fO5Mp7BDNVXBwb9_wQ08Y3JwONdoNmvdnUz6aspD7IVIL41t64kst-GTxvvkdA-1Xfh9LB0zmyaCEgYiaByNJevtqnwFociTzRbWR2yXcEkhzbqKSGG6ia55It5CeN3GB9sjAWOEd57fSgDJwr0D80zxFoXtLeX64gcCjNsxJsh5ZrQ8U34fdo-73mPDJPCOBkowiamPDWOkBQ54U5lesbE5R3KPA"
+	validTwoLabelsRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjpbImVjb20iXSwidGVhbSI6WyJldXJvcGUiXX19.Bm5s7FD_t1r1bAaKRWxGR5_YJUyK0Y1AauSpzYnbi8IRwt1v5ZMrgmlthA4rdq9zVF2bMsTcChflkCsheW2POJrcRSRJvXQaxdhGvneuI0JtcjtVJYl85BCtSTtwph272fU3I8llTAth2wH8MFuh2Nd90DUg6z5iky7N9sxQTZhLHRzaSnXnnuzorlxg5zHgc2xqQewTcdOmVkBzwUKpr1my-HyFlZoQmD7Jo-ekB4Cz11OXSKbd10or_FXpMj9qWyy2bdZ0g4GPiLFO35wdcz3_EozZ--ULG2oEkIoHMZnzjH_auu5zmPVt87S9JWNJxS9rwLNWyrTWV8JkNaoZ3w"
 	// kid = "rs256-key", payload = {"labels":{"app":["ecom"],"team":["europe"]},"namespaces":["kube-system","monitoring"]}
-	validTwoLabelsTwoNamespacesRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjoiZWNvbSIsInRlYW0iOiJldXJvcGUifSwibmFtZXNwYWNlcyI6WyJrdWJlLXN5c3RlbSIsIm1vbml0b3JpbmciXX0.Zk6hE9OBUIH5ctMzSeq2p40dJFiwZS_TghePWlTB1_-XHOzZRGvbT-sXoZnIy1__lHJZ4h8t0-P0_zwQPpZ2aB2A0Ar3wogEiIdktoRtqQcMvSjjIjwNm8e9uaE1QBpeqNtxg5i3hDMJLVfsoXta0PJ9YW4hbuhnpaThhji9M7duOXv9eeW4nJHSFr3YVCn75qR35O8z3Pwjo_06OhSpK5sy1PbqQLNvzkWdKYiqAjezWnnh6kO37hQfDJWUaKxkhE4TmOMJRk_mRKrUpHZ1mQ6rZ4YXyo0pBBNqJ5uJYA45bT2FJpNqJ9rXHf2qjDBwcS6SEw8pDe-iRdIC0xr1Ig"
+	validTwoLabelsTwoNamespacesRSAToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InJzMjU2LWtleSJ9.eyJsYWJlbHMiOnsiYXBwIjpbImVjb20iXSwidGVhbSI6WyJldXJvcGUiXX0sIm5hbWVzcGFjZXMiOlsia3ViZS1zeXN0ZW0iLCJtb25pdG9yaW5nIl19.C16uC5brWb03Zh51qq-To7C7m40qgnbnTp_6jBgoJk9IgW10k-7IgiDwGSzQBfLeRscOIIwxvLK-DgZ3RpqxtSSYZB-M_xR2kx-LeGIc9q0JCqAMGFmvd9OfXmbKwO0WAznepVUbM0gvtPQl0lGkDoAzgqUP6SXEW9FEHxJp-mEXDebUsKOXCx8TAMC_LGcLz8a__JPrCGx0i_6PvaWozCJuRp71_SwDwwXcNDAPCqX2ouYf2z4OILzc9qsUDY78EwJ6nN6hyBLpwTNKCvlydms9AddxKa7UpxCf--iYg4FanaFvvDHlpxOYYe0Kz6jqlFpZk6urJFcWMs7Gx5LCZg"
 )
 
 func (auth *JwtAuth) assertHmac(t *testing.T, expectAuthorized bool) {
@@ -133,9 +133,9 @@ func TestJWT_IsAuthorized(t *testing.T) {
 		ns    []string
 		l     map[string][]string
 	}{
-		{"hmac", validHmacToken, []string{"prometheus"}, map[string]string{}},
-		{"rsa", validRsaToken, []string{"prometheus", "app-1"}, map[string]string{}},
-		{"empty-namespace-rsa", validEmptyNamespacesRSAToken, []string{}, map[string]string{}},
+		{"hmac", validHmacToken, []string{"prometheus"}, map[string][]string{}},
+		{"rsa", validRsaToken, []string{"prometheus", "app-1"}, map[string][]string{}},
+		{"empty-namespace-rsa", validEmptyNamespacesRSAToken, []string{}, map[string][]string{}},
 		{"two-labels-rsa", validTwoLabelsRSAToken, []string{}, map[string][]string{"app": {"ecom"}, "team": {"europe"}}},
 		{"two-labels-two-namespaces-rsa", validTwoLabelsTwoNamespacesRSAToken, []string{"kube-system", "monitoring"}, map[string][]string{"app": {"ecom"}, "team": {"europe"}}},
 	}
