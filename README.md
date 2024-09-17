@@ -235,7 +235,7 @@ The proxy can be configured to use either namespaces and/or labels to query Prom
 At least one must be configured, otherwise the proxy will not proxy the query to Prometheus.
 *(It could lead to a security issue if the proxy is not configured to use namespaces or labels)*
 
-### Breaking Change in [v2.0.0]: Update map[string]string to map[string][]string for the labels map values
+##### Breaking Change in [v2.0.0](https://github.com/k8spin/prometheus-multi-tenant-proxy/releases/tag/v2.0.0): Update map[string]string to map[string][]string for the labels map values
 
 What Changed: Previously, the map only allowed a single string value per key:
 
