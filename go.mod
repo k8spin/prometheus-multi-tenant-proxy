@@ -4,6 +4,7 @@ go 1.23
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0
+	github.com/MicahParks/keyfunc/v3 v3.3.5
 	github.com/aws/aws-sdk-go v1.55.5
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/prometheus-community/prom-label-proxy v0.11.0
