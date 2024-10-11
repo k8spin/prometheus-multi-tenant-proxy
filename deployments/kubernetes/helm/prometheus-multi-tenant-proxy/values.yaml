@@ -121,3 +121,7 @@ proxy:
       secretName: prometheus-multi-tenant-proxy # In use only if createSecret is false
       # Create a secret with the name above, It must contain a key named authn.yaml with the content of the authn.yaml file
       # kubectl create secret generic prometheus-multi-tenant-proxy --from-file=authn.yaml=authn.yaml
+
+deployment:
+  annotations:
+    reloader-statkater-wahtever: true
