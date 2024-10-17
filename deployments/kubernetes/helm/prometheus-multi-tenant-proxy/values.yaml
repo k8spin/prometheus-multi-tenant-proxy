@@ -123,4 +123,4 @@ proxy:
       # kubectl create secret generic prometheus-multi-tenant-proxy --from-file=authn.yaml=authn.yaml
 
 deployment:
-  annotations:
+  annotations: {}
