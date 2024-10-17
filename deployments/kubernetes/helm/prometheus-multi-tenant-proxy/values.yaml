@@ -124,4 +124,3 @@ proxy:
 
 deployment:
   annotations:
-    reloader-statkater-wahtever: true
