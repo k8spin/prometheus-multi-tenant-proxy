@@ -15,6 +15,8 @@ This project has some reference from the [prometheus label injector](https://git
 
 The proxy enforces the `namespace` label in a given PromQL query while providing a basic auth layer.
 
+**NOTE:** This version is setup for CNCT. See added [deployments README](./deployments/kubernetes/helm/README.md)
+
 ## What is it?
 
 It is a simple golang proxy. It does basic or JWT auth, logs the requests, and serves as a Prometheus reverse proxy.
