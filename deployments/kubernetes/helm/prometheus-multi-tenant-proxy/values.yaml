@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/k8spin/prometheus-multi-tenant-proxy
+#  repository: ghcr.io/k8spin/prometheus-multi-tenant-proxy
+  repository: obv-miefxkks.scr.kr-west.scp-in.com/images/k8spin/prometheus-multi-tenant-proxy
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
